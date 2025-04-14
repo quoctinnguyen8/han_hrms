@@ -1,0 +1,46 @@
+Menu của trang admin lưu ở app/config/adminmenu.php
+
+********
+Dựng giao diện trang quản lý thông tin nhân viên
+Thông tin nhân viên gồm có các tab:
+- Thông tin cá nhân (employees + các bảng cha)
+- Thông tin học vấn (education_levels)
+- Trình độ ngoại ngữ (forgein_languages)
+- Thông tin hợp đồng (contract + salarie_details)
+- Nghiên cứu khoa học (scientific_research_topics)
+- Công trình khoa học (scientific_works)
+- Đào tạo sau đại học (after_universities)
+- Khen thưởng (bonuses)
+- Kỷ luật (disciplines)
+
+Logic:
+Muốn đổi phòng ban thì phải thông qua bảng employee_rotations (lưu thông tin mỗi lần đổi phòng ban)
+Hợp đồng (contract) gắn liền với thông tin lương (salarie_details). Chi cho phép tạo hợp đồng mới khi tạo mới nhân viên hoặc thay đổi hợp đồng. Thông tin lương cũ sẽ lưu vào salarie_updates (logic này không cần gấp, bỏ qua cũng được)
+
+**********
+Một số bảng chưa rõ tác dụng, tạm thời bỏ qua không cần quan tâm
+	salaries 					-> dùng bảng salarie_details
+	education_level_updates		-> làm phức tạp vấn đề
+	unit_used					-> không hiểu tạo làm l gì, không khóa chính, không khóa phụ
+	universities				-> có thể thêm vào thông tin nhân viên, nhưng tạm bỏ qua
+	working_processes			-> không rõ ý nghĩa, không cần quan tâm
+
+**********
+Chức năng đăng nhập cho nhân viên
+ - Tạo controller riêng, có thể dùng lại layout của admin (clone ra cho client chứ không dùng chung)
+ - Employees đã nghỉ việc sẽ không thể đăng nhập
+
+Chức năng cập nhật thông tin cá nhân cho nhân viên
+ - Cho phép xem và cập nhật thông tin cá nhân ở bảng employees
+ - Không được phép cập nhật hợp đồng và phòng ban (admin mới cập nhật được 2 mục này)
+
+Chức năng nghỉ việc (quit_job), chỉ admin truy cập được
+Tạo trang riêng
+Logic:
+	- quit_job_date phải trước hoặc bằng ngày hiện tại
+	- Khi nghỉ việc sẽ cập nhật thông tin cột status của bảng employees thành 0
+	- Employees đã nghỉ việc sẽ không thể đăng nhập, mặc định không hiển thị ở danh sách employees
+
+Chức năng đổi mật khẩu cho cả employees và admin
+
+Chức năng tìm kiếm employees: tìm kiếm theo một số tiêu chí, tạm thời chưa nghĩ ra
