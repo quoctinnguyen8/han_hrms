@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Employee;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
@@ -11,7 +11,7 @@ use App\Models\EmployeePosition;
 use App\Models\Specialized;
 use Illuminate\Http\Request;
 
-class EmployeeController extends Controller
+class EmployeeController extends BaseController
 {
     /**
      * Display a listing of the resource.

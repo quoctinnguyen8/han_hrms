@@ -5,7 +5,7 @@ use App\Http\Middleware\AdminAuthenticated;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\Admin\EmployeeController;
 
 Route::get('/', function () {
     return view('welcome');
