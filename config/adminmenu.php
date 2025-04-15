@@ -38,7 +38,7 @@ return [
             [
                 'key' => 'admin.employee.list',
                 'name' => 'Danh sách nhân viên',
-                'route' => '#',
+                'route' => 'admin.employee.index',
             ]
         ],
     ],

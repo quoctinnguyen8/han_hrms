@@ -71,6 +71,7 @@ class Employee extends Model
 	];
 
 	protected $fillable = [
+		'employee_code',
 		'username',
 		'password',
 		'full_name',

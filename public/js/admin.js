@@ -33,4 +33,13 @@ window.addEventListener("load", function () {
         const url = form.getAttribute('action').replace(/:id/g, idValue);
         form.setAttribute("action", url);
     });
+    
+    const editBtn = document.querySelectorAll(".js-btn-edit");
+    editBtn.forEach((button) => {
+        const idValue = button.closest("td").getAttribute("data-id");
+        const a = button.closest("a");
+        const url = a.getAttribute('href').replace(/:id/g, idValue);
+        a.setAttribute("href", url);
+    });
 });
+
