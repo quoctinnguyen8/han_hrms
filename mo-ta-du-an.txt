@@ -1,9 +1,9 @@
 Tổng quan: dự án này là bản build lại bằng Laravel + MySQL của một đề tài khác. Đề tài trước đó được viết bằng Winforms + SQL Server.
 Database đã được convert sang MySQL, giữ nguyên thiết kế như bản gốc
 
-Menu của trang admin lưu ở app/config/adminmenu.php
+Dùng Tinker để tạo mới account admin trước khi bắt đầu.
 
-Dùng Tinker để tạo mới account admin
+Menu của trang admin lưu ở app/config/adminmenu.php
 
 ********
 Dựng giao diện trang quản lý thông tin nhân viên
