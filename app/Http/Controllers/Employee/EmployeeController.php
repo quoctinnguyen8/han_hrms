@@ -10,7 +10,6 @@ use App\Models\Employee;
 use App\Models\EmployeePosition;
 use App\Models\Specialized;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -19,14 +18,13 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-
         $employees = Employee::select(
             'employee_code',
             'full_name',
             'hometown',
             'phone_number'
         )->paginate(10);
-        return view('employee.index', compact('employees'));
+        return view('admin.employee.index', compact('employees'));
     }
 
     /**
@@ -40,7 +38,7 @@ class EmployeeController extends Controller
         $specializations = Specialized::all();
         $educationLevels = EducationLevel::all();
 
-        return view('employee.create', compact(
+        return view('admin.employee.create', compact(
             'departments',
             'employeePositions',
             'contracts',
@@ -104,7 +102,7 @@ class EmployeeController extends Controller
         $specializations = Specialized::all();
         $educationLevels = EducationLevel::all();
 
-        return view('employee.edit', compact(
+        return view('admin.employee.edit', compact(
             'employee',
             'departments',
             'employeePositions',
@@ -168,7 +166,7 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         $employee = Employee::findOrFail($id);
-        if($employee->image) { 
+        if ($employee->image) {
             unlink(public_path($employee->image));
         }
         $employee->delete();
