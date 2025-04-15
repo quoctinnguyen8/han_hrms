@@ -3,6 +3,7 @@
 @section('sidebar-key', 'admin.employee.list')
 
 @section('content')
+<x-card>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -117,4 +118,5 @@
             <input type="submit" class="btn btn-success" value="Cập nhật" />
         </div>
     </form>
+</x-card>
 @endsection
