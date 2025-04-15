@@ -1,4 +1,9 @@
+Tổng quan: dự án này là bản build lại bằng Laravel + MySQL của một đề tài khác. Đề tài trước đó được viết bằng Winforms + SQL Server.
+Database đã được convert sang MySQL, giữ nguyên thiết kế như bản gốc
+
 Menu của trang admin lưu ở app/config/adminmenu.php
+
+Dùng Tinker để tạo mới account admin
 
 ********
 Dựng giao diện trang quản lý thông tin nhân viên
@@ -21,7 +26,7 @@ Hợp đồng (contract) gắn liền với thông tin lương (salarie_details)
 Một số bảng chưa rõ tác dụng, tạm thời bỏ qua không cần quan tâm
 	salaries 					-> dùng bảng salarie_details
 	education_level_updates		-> làm phức tạp vấn đề
-	unit_used					-> không hiểu tạo làm l gì, không khóa chính, không khóa phụ
+	unit_used					-> không hiểu tạo làm l gì, không khóa chính, không khóa phụ, bỏ
 	universities				-> có thể thêm vào thông tin nhân viên, nhưng tạm bỏ qua
 	working_processes			-> không rõ ý nghĩa, không cần quan tâm
 
@@ -35,7 +40,7 @@ Chức năng cập nhật thông tin cá nhân cho nhân viên
  - Không được phép cập nhật hợp đồng và phòng ban (admin mới cập nhật được 2 mục này)
 
 Chức năng nghỉ việc (quit_job), chỉ admin truy cập được
-Tạo trang riêng
+Tạo trang riêng/controller riêng
 Logic:
 	- quit_job_date phải trước hoặc bằng ngày hiện tại
 	- Khi nghỉ việc sẽ cập nhật thông tin cột status của bảng employees thành 0
