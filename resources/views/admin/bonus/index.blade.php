@@ -5,6 +5,7 @@
 {{-- menu focus vào trang danh sách nhân viên --}}
 
 @section('content')
+    @include('admin._error')
     <x-card class="col-12">
         <x-employee-tab :employeeCode="$employeeCode" activeTab="bonuses">
             <x-open-modal target="#mKhenThuongCreate" />

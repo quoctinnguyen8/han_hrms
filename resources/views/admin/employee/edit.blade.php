@@ -25,7 +25,7 @@
                     <x-input :value="$employee->username" label="Tên đăng nhập" name="username" />
                     <x-input label="Mật khẩu" name="password" type="password" placeholder="Để trống nếu không thay đổi" />
                     <x-input :value="$employee->full_name" label="Họ và tên" name="full_name" required />
-                    <x-input :value="$employee->birthday" label="Ngày sinh" name="birthday" type="date" required />
+                    <x-input :value="date_format($employee->birthday, 'Y-m-d')" label="Ngày sinh" name="birthday" type="date" required />
                     <x-input :value="$employee->hometown" label="Quê quán" name="hometown" required />
                     <x-input :value="$employee->phone_number" label="Số điện thoại" name="phone_number" required />
                     <x-input :value="$employee->identity_card" label="CMND/CCCD" name="identity_card" />

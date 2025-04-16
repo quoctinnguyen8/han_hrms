@@ -6,8 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Bonus;
 use Illuminate\Http\Request;
 
-class BonusController extends Controller
+class BonusController extends BaseController
 {
+    private $fields = [
+        'employee_code' => 'Mã nhân viên',
+        'bonus_date' => 'Ngày khen thưởng',
+        'reason' => 'Lý do khen thưởng',
+        'bonus_money' => 'Số tiền khen thưởng'
+    ];
+
     public function index()
     {
         $employeeCode = request('employeeCode');
@@ -19,23 +26,33 @@ class BonusController extends Controller
                 'bonus_money'
             ])->where('employee_code', $employeeCode)->paginate();
             return view('admin.bonus.index', compact('bonuses', 'employeeCode'));
+        }else{
+            $bonuses = Bonus::join('employees', 'employees.employee_code', '=', 'bonuses.employee_code')
+                ->select([
+                    'bonuses.id',
+                    'bonuses.employee_code',
+                    'employees.full_name',
+                    'bonuses.bonus_date',
+                    'bonuses.reason',
+                    'bonuses.bonus_money'
+                ])
+                ->orderBy('bonuses.bonus_date', 'desc')
+                ->paginate();
+            return view('admin.bonus.index2', compact('bonuses'));
         }
     }
 
     public function store(Request $request)
     {
-        $fields = [
-            'employee_code' => 'Mã nhân viên',
-            'bonus_date' => 'Ngày khen thưởng',
-            'reason' => 'Lý do khen thưởng',
-            'bonus_money' => 'Số tiền khen thưởng'
-        ];
         $validatedData = $request->validate([
             'employee_code' => 'required|string',
-            'bonus_date' => 'required|date',
-            'reason' => 'required|string',
-            'bonus_money' => 'required|numeric'
-        ], [], $fields);
+            'bonus_date' => 'required|date|before_or_equal:today',
+            'reason' => 'required|string|max:500',
+            'bonus_money' => 'required|numeric|min:1|max:99999999999'
+        ],
+        [
+            'bonus_date.before_or_equal' => 'Ngày khen thưởng không được lớn hơn ngày hiện tại',
+        ], $this->fields);
         Bonus::create($validatedData);
         return redirect()->route('admin.bonuses.index', ['employeeCode'=>$validatedData['employee_code']])
             ->with('success', 'Thêm thông tin khen thưởng thành công');
@@ -51,13 +68,16 @@ class BonusController extends Controller
     {
         $bonus = Bonus::findOrFail($id);
         $validatedData = $request->validate([
-            'employee_code' => 'required|string',
-            'bonus_date' => 'required|date',
-            'reason' => 'required|string',
-            'bonus_money' => 'required|numeric'
-        ]);
+            'bonus_date' => 'required|date|before_or_equal:today',
+            'reason' => 'required|string|max:500',
+            'bonus_money' => 'required|numeric|min:1|max:99999999999'
+        ],
+        [
+            'bonus_date.before_or_equal' => 'Ngày khen thưởng không được lớn hơn ngày hiện tại',
+        ],$this->fields);
         $bonus->update($validatedData);
-        return redirect()->route('admin.bonuses.index', ['employeeCode'=>$validatedData['employee_code']])
+
+        return back()
             ->with('success', 'Cập nhật thông tin khen thưởng thành công');
     }
 
@@ -66,7 +86,7 @@ class BonusController extends Controller
         $bonus = Bonus::findOrFail($id);
         $employeeCode = $bonus->employee_code;
         $bonus->delete();
-        return redirect()->route('admin.bonuses.index', ['employeeCode'=>$employeeCode])
+        return back()
             ->with('success', 'Xóa thông tin khen thưởng thành công');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+// routeParam mặc định là id
+
 return [
     [
         'tabKey' => 'employee',
