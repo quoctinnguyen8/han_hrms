@@ -87,19 +87,19 @@
                             <img class="rounded-circle header-profile-user"
                                 src="/velzon/images/users/avatar-1.jpg" alt="Header Avatar">
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna
-                                    Adame</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Admin</span>
+                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
+                                    {{ Auth::guard('admin')->user()->username }}</span>
+                                </span>
                             </span>
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <h6 class="dropdown-header">Xin chào admin</h6>
+                        <h6 class="dropdown-header">Xin chào {{ Auth::guard('admin')->user()->username }}</h6>
                         <a class="dropdown-item" href="auth-lockscreen-basic.html"><i
                                 class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Đổi mật khẩu</span></a>
-                        <a class="dropdown-item" href="auth-logout-basic.html"><i
+                        <a class="dropdown-item" href="{{ route('admin.logout') }}"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle" data-key="t-logout">Đăng xuất</span></a>
                     </div>

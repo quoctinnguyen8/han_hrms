@@ -46,12 +46,4 @@ class AccountController extends BaseController
         
         return redirect()->route('admin.login');
     }
-
-    public function createAccount()
-    {
-        $admin = new Admin();
-        $admin->username = 'admin';
-        $admin->password = bcrypt('admin123');
-        $admin->save();
-    }
 }

@@ -42,6 +42,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         //Kỷ luật
         Route::resource('disciplines', DisciplineController::class);
         // Đăng xuất
-        Route::post('logout', [AccountController::class, 'logout'])->name('logout');
+        Route::get('logout', [AccountController::class, 'logout'])->name('logout');
     });
 });
