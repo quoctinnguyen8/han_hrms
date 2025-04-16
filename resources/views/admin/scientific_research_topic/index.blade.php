@@ -5,6 +5,7 @@
 @section('sidebar-key', 'admin.employee.list')
 
 @section('content')
+    @include('admin._error')
     <x-card class="col-12">
         <x-employee-tab :employeeCode="$employeeCode" activeTab="scientific_research_topics">
             <x-open-modal target="#mDeTaiCreate" />

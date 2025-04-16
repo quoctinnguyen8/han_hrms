@@ -31,14 +31,16 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-
                 {{-- load menu từ config.adminmenu.php và hiển thị --}}
                 @php
                     $menu = config('adminmenu');
                 @endphp
 
                 @foreach ($menu as $m)
+                    @if (isset($m['title']))
+                        <li class="menu-title"><span data-key="t-{{ $m['title'] }}">{{$m['title']}}</span></li>
+                        @continue
+                    @endif
                     @if (!empty($m['children']))
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebar{{ $m['key'] }}" data-bs-toggle="collapse"

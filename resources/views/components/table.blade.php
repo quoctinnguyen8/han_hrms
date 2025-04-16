@@ -9,7 +9,7 @@
     <thead>
         <tr>
             @foreach($headers as $h)
-                <th>{{ $h }}</th>
+                <th class="align-content-center">{{ $h }}</th>
             @endforeach
             <th></th>
         </tr>
@@ -20,7 +20,7 @@
                 @foreach($row->getAttributes() as $key => $value)
                     <td>{{ $value }}</td>
                 @endforeach
-                <td data-id="{{ $row->$primaryKey }}">
+                <td data-id="{{ $row->$primaryKey }}" style="width: 1%; white-space: nowrap;">
                     @isset($action)
                         {{ $action }}
                     @endisset

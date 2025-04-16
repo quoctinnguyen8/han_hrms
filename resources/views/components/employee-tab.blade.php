@@ -6,7 +6,7 @@
 @endphp
 
 <div class="employee-tab">
-    <ul class="nav nav-tabs" id="employeeTab" role="tablist">
+    <ul class="nav nav-tabs nav-border-top" id="employeeTab" role="tablist">
         @foreach ($tabConfig as $tab)
             @php
                 $tabUrl = '#';

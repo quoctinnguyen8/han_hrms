@@ -15,9 +15,9 @@ Thông tin nhân viên gồm có các tab:
 - Thông tin hợp đồng (contract + salarie_details)
 - [Đã xong] Nghiên cứu khoa học (scientific_research_topics)
 - [Đã xong] Công trình khoa học (scientific_works)
-- Đào tạo sau đại học (after_universities)
-- Khen thưởng (bonuses)
-- Kỷ luật (disciplines)
+- [Đã xong] Đào tạo sau đại học (after_universities)
+- [Đã xong] Khen thưởng (bonuses)
+- [Đã xong] Kỷ luật (disciplines)
 
 Logic:
 Muốn đổi phòng ban thì phải thông qua bảng employee_rotations (lưu thông tin mỗi lần đổi phòng ban)

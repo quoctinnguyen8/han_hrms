@@ -1,5 +1,7 @@
 <?php
 
+// routeParam mặc định là id
+
 return [
     [
         'tabKey' => 'employee',
@@ -21,5 +23,20 @@ return [
         'tabKey' => 'scientific_works',
         'tabName' => 'Công trình khoa học',
         'route' => 'admin.scientific_works.index',
+    ],
+    [
+        'tabKey' => 'after_universities',
+        'tabName' => 'Đào tạo sau đại học',
+        'route' => 'admin.after_universities.index',
+    ],
+    [
+        'tabKey' => 'bonuses',
+        'tabName' => 'Khen thưởng',
+        'route' => 'admin.bonuses.index',
+    ],
+    [
+        'tabKey' => 'disciplines',
+        'tabName' => 'Kỷ luật',
+        'route' => 'admin.disciplines.index',
     ]
 ];

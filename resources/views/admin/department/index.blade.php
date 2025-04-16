@@ -3,7 +3,7 @@
 @section('sidebar-key', 'admin.departments')
 
 @section('content')
-
+    @include('admin._error')
     <x-card class="col-12">
         <x-open-modal target="#mPhongBanCreate" />
 

@@ -10,8 +10,8 @@
         </a>
         <x-table :headers="['Mã nhân viên', 'Tên nhân viên', 'Địa chỉ', 'Số điện thoại']" :data="$employees" key="employee_code">
             <x-slot:action>
-                <a href="{{ route('admin.employee.edit', ['employee' => ':id']) }}" class="btn btn-warning btn-sm js-btn-edit">
-                    <i class="ri-edit-line"></i> Sửa
+                <a href="{{ route('admin.employee.edit', ['employee' => ':id']) }}" class="btn btn-success btn-sm js-btn-edit">
+                    <i class="ri-edit-line"></i> Chi tiết
                 </a>
                 <x-del-button url="{{ route('admin.employee.destroy', ['employee' => ':id']) }}" class="btn-danger btn-sm" />
             </x-slot>

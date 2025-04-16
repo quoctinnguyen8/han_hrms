@@ -146,7 +146,7 @@ class EmployeeController extends BaseController
             $validated['password'] = bcrypt($validated['password']);
         }
         if ($request->hasFile('image')) {
-            if ($employee->image) {
+            if ($employee->image && file_exists(public_path($employee->image))) {
                 unlink(public_path($employee->image));
             }
             $img = time() . '.' . $request->file('image')->getClientOriginalExtension();
@@ -156,7 +156,7 @@ class EmployeeController extends BaseController
             unset($validated['image']);
         }
         $employee->update($validated);
-        return redirect()->route('admin.employee.index')
+        return redirect()->route('admin.employee.edit', ['employee' => $employee->employee_code])
             ->with('success', 'Thông tin nhân viên đã được cập nhật thành công');
     }
 

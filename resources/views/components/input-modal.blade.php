@@ -5,7 +5,7 @@ Dùng cho input ở modal kết hợp @error
 --}}
 
 @php
-    $name = $attributes->get('name');
+    $name = $attributes->get('name', '');
     $value = $attributes->get('value');
     $type = $attributes->get('type', 'text');
     $id = $attributes->get('id', $name);

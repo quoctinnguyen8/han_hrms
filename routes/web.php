@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminAuthenticated;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\AfterUniversityController;
+use App\Http\Controllers\Admin\BonusController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\DisciplineController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\ForeignLanguageController;
 use App\Http\Controllers\Admin\ScientificResearchTopicController;
@@ -32,7 +35,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('scientific_research_topics', ScientificResearchTopicController::class);
         // Công trình khoa học
         Route::resource('scientific_works', ScientificWorkController::class);
-
+        //Đào tạo sau đại học
+        Route::resource('after_universities', AfterUniversityController::class);
+        // Khen thưởng
+        Route::resource('bonuses', BonusController::class);
+        //Kỷ luật
+        Route::resource('disciplines', DisciplineController::class);
         // Đăng xuất
         Route::post('logout', [AccountController::class, 'logout'])->name('logout');
     });
