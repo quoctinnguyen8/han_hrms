@@ -8,7 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class Employee
@@ -53,7 +53,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Employee extends Model
+class Employee extends Authenticatable
 {
 	protected $table = 'employees';
 	protected $primaryKey = 'employee_code';
