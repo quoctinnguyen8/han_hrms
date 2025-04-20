@@ -77,5 +77,11 @@ return [
         'name' => 'Kỷ luật',
         'icon' => 'ri-error-warning-line',
         'route' => 'admin.disciplines.index',
+    ],
+    [
+        'key' => 'admin.contract.list',
+        'name' => 'Hợp đồng',
+        'icon' => 'ri-file-list-3-line',
+        'route' => 'admin.contracts.index',
     ]
 ];

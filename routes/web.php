@@ -5,6 +5,7 @@ use App\Http\Middleware\AdminAuthenticated;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AfterUniversityController;
 use App\Http\Controllers\Admin\BonusController;
+use App\Http\Controllers\Admin\ContractController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\DisciplineController;
@@ -41,6 +42,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('bonuses', BonusController::class);
         //Kỷ luật
         Route::resource('disciplines', DisciplineController::class);
+        //Thông tin hơp đồng
+        Route::resource('contracts', ContractController::class);
         // Đăng xuất
         Route::post('logout', [AccountController::class, 'logout'])->name('logout');
     });

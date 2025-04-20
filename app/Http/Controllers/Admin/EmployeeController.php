@@ -8,11 +8,107 @@ use App\Models\Department;
 use App\Models\EducationLevel;
 use App\Models\Employee;
 use App\Models\EmployeePosition;
+use App\Models\SalaryDetail;
 use App\Models\Specialized;
 use Illuminate\Http\Request;
 
 class EmployeeController extends BaseController
 {
+
+    private $fields = [
+        'contract_code' => 'Mã hợp đồng',
+        'employee_code' => 'Mã nhân viên',
+        'contract_type' => 'Loại hợp đồng',
+        'start_date' => 'Ngày bắt đầu',
+        'end_date' => 'Ngày kết thúc',
+        'note' => 'Ghi chú',
+        'basic_salary' => 'Lương cơ bản',
+        'social_insurance' => 'Bảo hiểm xã hội',
+        'health_insurance' => 'Bảo hiểm y tế',
+        'unemployment_insurance' => 'Bảo hiểm thất nghiệp',
+        'allowance' => 'Phụ cấp',
+        'income_tax' => 'Thuế thu nhập cá nhân',
+        'bonus_money' => 'Tiền thưởng',
+        'pay_day' => 'Ngày trả lương',
+        'discipline_money' => 'Tiền kỷ luật',
+        'username' => 'Tên đăng nhập',
+        'password' => 'Mật khẩu',
+        'password_confirmation' => 'Xác nhận mật khẩu',
+        'full_name' => 'Họ và tên',
+        'birthday' => 'Ngày sinh',
+        'hometown' => 'Quê quán',
+        'phone_number' => 'Số điện thoại',
+        'identity_card' => 'Số CMND/CCCD',
+        'gender' => 'Giới tính',
+        'ethnic' => 'Dân tộc',
+        'department_code' => 'Mã phòng ban',
+        'employee_position_code' => 'Mã chức vụ',
+    ];
+
+    private $rules = [
+        'employee_code' => 'required|string|max:20|unique:employees,employee_code',
+        'username' => 'nullable|unique:employees,username|string|max:20',
+        'password' => 'required|string|min:8|confirmed',
+        'password_confirmation' => 'required|string|min:8',
+        'full_name' => 'required|string|max:40',
+        'birthday' => 'required|date',
+        'hometown' => 'required|string|max:90',
+        'phone_number' => 'required|string|max:11',
+        'identity_card' => 'nullable|string|max:50',
+        'gender' => 'required|boolean',
+        'ethnic' => 'required|string|max:10',
+        'department_code' => 'required|exists:departments,department_code',
+        'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
+        'contract_code' => 'required|unique:contracts',
+        'specialized_code' => 'required|exists:specialized,specialized_code',
+        'education_level_code' => 'required|exists:education_levels,education_level_code',
+        'status' => 'required|boolean',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'contract_type' => 'required|string',
+        'start_date' => 'required|date|before_or_equal:end_date|after_or_equal:today',
+        'end_date' => 'required|date|after_or_equal:start_date|after_or_equal:today',
+        'note' => 'nullable|string|max:500',
+        'basic_salary' => 'required|numeric|min:1|max:99999999999',
+        'social_insurance' => 'required|numeric|min:1|max:99999999999',
+        'health_insurance' => 'required|numeric|min:1|max:99999999999',
+        'unemployment_insurance' => 'required|numeric|min:1|max:99999999999',
+        'allowance' => 'required|numeric|min:1|max:99999999999',
+        'income_tax' => 'required|numeric|min:1|max:99999999999',
+        'bonus_money' => 'required|numeric|min:1|max:99999999999',
+        'discipline_money' => 'required|numeric|min:1|max:99999999999',
+        'pay_day' => 'required|date|after_or_equal:start_date',
+    ];
+
+    private $msg = [
+        'employee_code.required' => 'Mã nhân viên là bắt buộc.',
+        'employee_code.unique' => 'Mã nhân viên đã tồn tại.',
+        'username.unique' => 'Tên đăng nhập đã tồn tại.',
+        'password.required' => 'Mật khẩu là bắt buộc.',
+        'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+        'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+        'full_name.required' => 'Họ và tên là bắt buộc.',
+        'birthday.required' => 'Ngày sinh là bắt buộc.',
+        'hometown.required' => 'Quê quán là bắt buộc.',
+        'phone_number.required' => 'Số điện thoại là bắt buộc.',
+        'department_code.exists' => 'Mã phòng ban không hợp lệ.',
+        'employee_position_code.exists' => 'Mã chức vụ không hợp lệ.',
+        'contract_code.unique' => 'Mã hợp đồng đã tồn tại.',
+        'specialized_code.exists' => 'Mã chuyên môn không hợp lệ.',
+        'education_level_code.exists' => 'Mã trình độ học vấn không hợp lệ.',
+        'image.required' => 'Ảnh là bắt buộc.',
+        'image.image' => 'Ảnh phải là định dạng hình ảnh.',
+        'start_date.before_or_equal' => 'Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.',
+        'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.',
+        'basic_salary.required' => 'Lương cơ bản là bắt buộc.',
+        'social_insurance.required' => 'Bảo hiểm xã hội là bắt buộc.',
+        'health_insurance.required' => 'Bảo hiểm y tế là bắt buộc.',
+        'unemployment_insurance.required' => 'Bảo hiểm thất nghiệp là bắt buộc.',
+        'allowance.required' => 'Phụ cấp là bắt buộc.',
+        'income_tax.required' => 'Thuế thu nhập cá nhân là bắt buộc.',
+        'bonus_money.required' => 'Tiền thưởng là bắt buộc.',
+        'discipline_money.required' => 'Tiền kỷ luật là bắt buộc.',
+        'pay_day.required' => 'Ngày trả lương là bắt buộc.',
+    ];
     /**
      * Display a listing of the resource.
      */
@@ -37,7 +133,6 @@ class EmployeeController extends BaseController
         $contracts = Contract::all();
         $specializations = Specialized::all();
         $educationLevels = EducationLevel::all();
-
         return view('admin.employee.create', compact(
             'departments',
             'employeePositions',
@@ -53,41 +148,44 @@ class EmployeeController extends BaseController
     public function store(Request $request)
     {
         // Validate the request data
-        $validated = $request->validate([
-            'employee_code' => 'required|string|max:20|unique:employees,employee_code',
-            'username' => 'nullable|unique:employees,username',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8',
-            'full_name' => 'required|string|max:255',
-            'birthday' => 'required|date',
-            'hometown' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'identity_card' => 'nullable|string|max:20',
-            'gender' => 'required|boolean',
-            'ethnic' => 'required|string|max:50',
-            'department_code' => 'required|exists:departments,department_code',
-            'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
-            'contract_code' => 'required|exists:contracts,contract_code',
-            'specialized_code' => 'required|exists:specialized,specialized_code',
-            'education_level_code' => 'required|exists:education_levels,education_level_code',
-            'status' => 'required|boolean',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validated = $request->validate($this->rules, $this->msg, $this->fields);
+
+        $contract = new Contract();
+        $contract->contract_code = $validated['contract_code'];
+        $contract->contract_type = $validated['contract_type'];
+        $contract->start_date = $validated['start_date'];
+        $contract->end_date = $validated['end_date'];
+        $contract->note = $validated['note'];
+        $contract->save();
+
         $validated['password'] = bcrypt($request->password);
         $img = time() . '.' . $request->file('image')->getClientOriginalExtension();
         $request->image->move(public_path('images/employees'), $img);
         $validated['image'] = 'images/employees/' . $img;
         Employee::create($validated);
+
+        $salaryDetail = new SalaryDetail();
+        $salaryDetail->employee_code = $validated['employee_code'];
+        $salaryDetail->basic_salary = $validated['basic_salary'];
+        $salaryDetail->social_insurance = $validated['social_insurance'];
+        $salaryDetail->health_insurance = $validated['health_insurance'];
+        $salaryDetail->unemployment_insurance = $validated['unemployment_insurance'];
+        $salaryDetail->allowance = $validated['allowance'];
+        $salaryDetail->income_tax = $validated['income_tax'];
+        $salaryDetail->bonus_money = $validated['bonus_money'];
+        $salaryDetail->discipline_money = $validated['discipline_money'];
+        $salaryDetail->pay_day = $validated['pay_day'];
+        $salaryDetail->total_salary = $validated['basic_salary']
+            + $validated['allowance'] //phu cap
+            - $validated['income_tax'] //thue nhap ca nhan 
+            - $validated['discipline_money'] //tien ky luat
+            - $validated['social_insurance'] // bao hiem xa hoi
+            - $validated['health_insurance']  // bao hiem y te
+            - $validated['unemployment_insurance']; // bao hiem that nghiep
+        $salaryDetail->save();
+
         return redirect()->route('admin.employee.index')
             ->with('success', 'Nhân viên đã được tạo thành công');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -130,7 +228,6 @@ class EmployeeController extends BaseController
             'ethnic' => 'required|string|max:50',
             'department_code' => 'required|exists:departments,department_code',
             'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
-            'contract_code' => 'required|exists:contracts,contract_code',
             'specialized_code' => 'required|exists:specialized,specialized_code',
             'education_level_code' => 'required|exists:education_levels,education_level_code',
             'status' => 'required|boolean',
@@ -166,8 +263,20 @@ class EmployeeController extends BaseController
     public function destroy(string $id)
     {
         $employee = Employee::findOrFail($id);
+
         if ($employee->image) {
-            unlink(public_path($employee->image));
+            if (file_exists(public_path($employee->image)))
+                unlink(public_path($employee->image));
+        }
+        if ($employee->contract_code) {
+            $contract = Contract::where('contract_code', $employee->contract_code)->first();
+            if ($contract) {
+                $contract->delete();
+            }
+        }
+        $salaryDetail = SalaryDetail::where('employee_code', $employee->employee_code)->first();
+        if ($salaryDetail) {
+            $salaryDetail->delete();
         }
         $employee->delete();
         return redirect()->route('admin.employee.index')
