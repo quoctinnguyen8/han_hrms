@@ -38,5 +38,10 @@ return [
         'tabKey' => 'disciplines',
         'tabName' => 'Kỷ luật',
         'route' => 'admin.disciplines.index',
+    ],
+    [
+        'tabKey' => 'contracts',
+        'tabName' => 'Hợp đồng',
+        'route' => 'admin.contracts.index'
     ]
 ];
