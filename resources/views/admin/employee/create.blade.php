@@ -4,21 +4,12 @@
 
 @section('content')
     <x-card>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <form action="{{ route('admin.employee.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="fCreateEmployee" novalidate action="{{ route('admin.employee.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="d-flex justify-content-end mt-3">
-                <input type="submit" class="btn btn-success" value="Thêm mới" />
+                <input type="button" id="btnCreateEmployee" class="btn btn-success" value="Thêm mới" />
             </div>
-            <ul class="nav nav-tabs" id="employeeTab" role="tablist">
+            <ul class="nav nav-tabs nav-border-top" id="employeeTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Thông tin nhân viên</button>
                 </li>
@@ -32,8 +23,8 @@
             <div class="tab-content mt-3" id="employeeTabContent">
                 <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                     <div class="row">
+                        <h5 class="mb-3">Thông tin nhân viên</h5>
                         <div class="col-md-6">
-                            <h5 class="mb-3">Thông tin nhân viên</h5>
                             <x-input label="Mã nhân viên" name="employee_code" required />
                             <x-input label="Tên đăng nhập" name="username" />
                             <x-input label="Mật khẩu" name="password" type="password" />
@@ -143,4 +134,8 @@
             </div>
         </form>
     </x-card>
+@endsection
+
+@section('script')
+    <script src="{{ asset('js/admin-employee.js') }}"></script>
 @endsection

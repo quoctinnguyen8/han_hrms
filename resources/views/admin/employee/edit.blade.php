@@ -5,17 +5,9 @@
 @section('sidebar-key', 'admin.employee.list')
 
 @section('content')
+    @include('admin._error')
     <x-card>
         <x-employee-tab :employeeCode="$employee->employee_code" activeTab="employee">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
             <form action="{{ route('admin.employee.update', ['employee' => $employee->employee_code]) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf

@@ -74,8 +74,8 @@ class EmployeeController extends BaseController
         'unemployment_insurance' => 'required|numeric|min:1|max:99999999999',
         'allowance' => 'required|numeric|min:1|max:99999999999',
         'income_tax' => 'required|numeric|min:1|max:99999999999',
-        'bonus_money' => 'required|numeric|min:1|max:99999999999',
-        'discipline_money' => 'required|numeric|min:1|max:99999999999',
+        'bonus_money' => 'nullable|numeric|min:1|max:99999999999',
+        'discipline_money' => 'nullable|numeric|min:1|max:99999999999',
         'pay_day' => 'required|date|after_or_equal:start_date',
     ];
 
@@ -114,12 +114,27 @@ class EmployeeController extends BaseController
      */
     public function index()
     {
-        $employees = Employee::select(
+        $query = Employee::select(
             'employee_code',
             'full_name',
             'hometown',
             'phone_number'
-        )->paginate(10);
+        );
+        if (request('employee_code')) {
+            // Tìm chính xác theo mã nhân viên
+            $query->where('employee_code', request('employee_code'));
+        }
+        if (request('full_name')) {
+            // Tìm theo tên nhân viên
+            $query->where('full_name', 'like', '%' . request('full_name') . '%');
+        }
+        if (request('department_code')) {
+            // Tìm theo mã phòng ban
+            $query->where('department_code', request('department_code'));
+        }
+        // xem câu sql
+        //dd($query->toSql());
+        $employees = $query->paginate();
         return view('admin.employee.index', compact('employees'));
     }
 
