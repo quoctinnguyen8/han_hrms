@@ -33,8 +33,8 @@
     </select>
 
     @error($name)
-        <div class="invalid-feedback">
+        <small class="invalid-feedback d-block">
             {{ $message }}
-        </div>
+        </small>
     @enderror
 </div>

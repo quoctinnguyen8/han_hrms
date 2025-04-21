@@ -1,0 +1,1 @@
+Mở file .md, nhấn tổ hợp phím Ctrl Shift V để xem preview
