@@ -20,7 +20,7 @@ Thông tin nhân viên gồm có các tab:
 - [Đã xong] Thông tin cá nhân (employees + các bảng cha)
 - [Bỏ qua] Thông tin học vấn (education_levels)
 - [Đã xong] Trình độ ngoại ngữ (forgein_languages)
-- Thông tin hợp đồng (contract + salarie_details)
+- [Đã xong] Thông tin hợp đồng (contract + salarie_details)
 - [Đã xong] Nghiên cứu khoa học (scientific_research_topics)
 - [Đã xong] Công trình khoa học (scientific_works)
 - [Đã xong] Đào tạo sau đại học (after_universities)
@@ -35,12 +35,12 @@ Hợp đồng (contract) gắn liền với thông tin lương (salarie_details)
 Một số bảng chưa rõ tác dụng, tạm thời bỏ qua không cần quan tâm
 	salaries 					-> dùng bảng salarie_details
 	education_level_updates		-> làm phức tạp vấn đề
-	unit_used					-> không hiểu tạo làm l gì, không khóa chính, không khóa phụ, bỏ
+	unit_used					-> không hiểu tạo làm gì, không khóa chính, không khóa phụ, bỏ
 	universities				-> có thể thêm vào thông tin nhân viên, nhưng tạm bỏ qua
 	working_processes			-> không rõ ý nghĩa, không cần quan tâm
 
 **********
-Chức năng đăng nhập cho nhân viên
+[Đã xong] Chức năng đăng nhập cho nhân viên
  - Tạo controller riêng, có thể dùng lại layout của admin (clone ra cho client chứ không dùng chung)
  - Employees đã nghỉ việc sẽ không thể đăng nhập
 
@@ -57,4 +57,13 @@ Logic:
 
 Chức năng đổi mật khẩu cho cả employees và admin
 
-Chức năng tìm kiếm employees: tìm kiếm theo một số tiêu chí, tạm thời chưa nghĩ ra
+[Đã xong] Chức năng tìm kiếm employees: tìm kiếm theo một số tiêu chí, tạm thời chưa nghĩ ra
+
+========================
+
+Bổ sung 1 số logic:
+0/ Thêm craeted_at vào bảng employees, order by craeted_at desc
+1/ Về thông tin hợp đồng: Không được phép sửa hợp đồng đã hết hạn
+2/ Khi xóa nhân viên:
+	- Chỉ được phép xóa nhân viên đã nghỉ việc
+	- Xóa luôn các thông tin đính kèm
