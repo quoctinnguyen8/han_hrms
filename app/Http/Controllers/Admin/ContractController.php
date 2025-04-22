@@ -40,16 +40,16 @@ class ContractController extends Controller
                 return redirect()->route('admin.contracts.index')
                     ->with('error', 'Mã nhân viên không tồn tại');
             }
-            $contracts = $employee->contract()
-                ->select([
-                    'contracts.contract_code',
-                    'contracts.contract_type',
-                    'contracts.start_date',
-                    'contracts.end_date',
-                ])
+            $contracts = Contract::select([
+                'contracts.contract_code',
+                'contracts.contract_type',
+                'contracts.start_date',
+                'contracts.end_date',
+            ])
+                ->where('employee_code', $employeeCode)
                 ->orderBy('contracts.start_date', 'desc')
                 ->paginate();
-            return view('admin.contract.index', compact('contracts', 'employeeCode', 'employee'));
+            return view('admin.contract.index', compact('contracts', 'employeeCode'));
         } else {
             $contracts = Contract::select([
                 'contracts.contract_code',
@@ -57,8 +57,8 @@ class ContractController extends Controller
                 'contracts.start_date',
                 'contracts.end_date',
             ])
-            ->orderBy('contracts.start_date', 'desc')
-            ->paginate();
+                ->orderBy('contracts.start_date', 'desc')
+                ->paginate();
             return view('admin.contract.index2', compact('contracts'));
         }
     }
@@ -94,25 +94,13 @@ class ContractController extends Controller
             'pay_day.after_or_equal' => 'Ngày trả lương không được nhỏ hơn ngày bắt đầu',
         ], $this->fields);
 
-        $contract = new Contract();
-        $contract->contract_code = $validatedData['contract_code'];
-        $contract->contract_type = $validatedData['contract_type'];
-        $contract->start_date = $validatedData['start_date'];
-        $contract->end_date = $validatedData['end_date'];
-        $contract->note = $validatedData['note'];
-        $contract->save();
-
         $employee = Employee::where('employee_code', $validatedData['employee_code'])->first();
         if (!$employee) {
             return back()->with('error', 'Mã nhân viên không tồn tại');
         }
-        $employee->contract_code = $validatedData['contract_code'];
-        $employee->save();
-        $salaryDetail = SalaryDetail::where('employee_code', $validatedData['employee_code'])->first();
-        if (!$salaryDetail) {
-            $salaryDetail = new SalaryDetail();
-            $salaryDetail->employee_code = $validatedData['employee_code'];
-        }
+
+        $salaryDetail = new SalaryDetail();
+        $salaryDetail->employee_code = $validatedData['employee_code'];
         $salaryDetail->basic_salary = $validatedData['basic_salary'];
         $salaryDetail->social_insurance = $validatedData['social_insurance'];
         $salaryDetail->health_insurance = $validatedData['health_insurance'];
@@ -123,6 +111,7 @@ class ContractController extends Controller
         $salaryDetail->discipline_money = $validatedData['discipline_money'];
         $salaryDetail->pay_day = $validatedData['pay_day'];
         $salaryDetail->total_salary = $validatedData['basic_salary']
+            + $validatedData['bonus_money'] //tien thuong
             + $validatedData['allowance'] //phu cap
             - $validatedData['income_tax'] //thue nhap ca nhan 
             - $validatedData['discipline_money'] //tien ky luat
@@ -130,6 +119,16 @@ class ContractController extends Controller
             - $validatedData['health_insurance']  // bao hiem y te
             - $validatedData['unemployment_insurance']; // bao hiem that nghiep
         $salaryDetail->save();
+
+        $contract = new Contract();
+        $contract->salary_detail_id = $salaryDetail->id;
+        $contract->contract_code = $validatedData['contract_code'];
+        $contract->employee_code = $validatedData['employee_code'];
+        $contract->contract_type = $validatedData['contract_type'];
+        $contract->start_date = $validatedData['start_date'];
+        $contract->end_date = $validatedData['end_date'];
+        $contract->note = $validatedData['note'];
+        $contract->save();
 
         return redirect()->route('admin.contracts.index', ['employeeCode' => $validatedData['employee_code']])
             ->with('success', 'Thêm thông tin hợp đồng thành công');
@@ -140,8 +139,8 @@ class ContractController extends Controller
     public function edit(string $id)
     {
         $contract = Contract::findOrFail($id);
-        $employeeCode = $contract->employees()->first()->employee_code ?? null;
-        $salaryDetail = SalaryDetail::where('employee_code', $employeeCode)->firstOrFail();
+        $employeeCode = $contract->employee_code;
+        $salaryDetail = SalaryDetail::findOrFail($contract->salary_detail_id);
         return view('admin.contract.edit', compact('contract', 'salaryDetail'))
             ->with('employeeCode', $employeeCode);
     }
@@ -152,8 +151,6 @@ class ContractController extends Controller
     public function update(Request $request, string $id)
     {
         $contract = Contract::findOrFail($id);
-        $employee = Employee::where('contract_code', $id)->firstOrFail();
-        $employeeCode = $employee->employee_code;
         $validatedData = $request->validate([
             'note' => 'nullable|string|max:500',
             'basic_salary' => 'required|numeric|min:1|max:99999999999',
@@ -170,7 +167,7 @@ class ContractController extends Controller
         ], $this->fields);
         $contract->note = $validatedData['note'];
         $contract->save();
-        $salaryDetail = SalaryDetail::where('employee_code', $employeeCode)->firstOrFail();
+        $salaryDetail = SalaryDetail::findOrFail($contract->salary_detail_id);
         $salaryDetail->basic_salary = $validatedData['basic_salary'];
         $salaryDetail->social_insurance = $validatedData['social_insurance'];
         $salaryDetail->health_insurance = $validatedData['health_insurance'];
@@ -181,6 +178,7 @@ class ContractController extends Controller
         $salaryDetail->discipline_money = $validatedData['discipline_money'];
         $salaryDetail->pay_day = $validatedData['pay_day'];
         $salaryDetail->total_salary = $validatedData['basic_salary']
+            + $validatedData['bonus_money'] //tien thuong
             + $validatedData['allowance'] //phu cap
             - $validatedData['income_tax'] //thue nhap ca nhan 
             - $validatedData['discipline_money'] //tien ky luat
@@ -197,19 +195,12 @@ class ContractController extends Controller
     public function destroy(string $id)
     {
         $contract = Contract::findOrFail($id);
-        $employee = Employee::where('contract_code', $id)->first();
-        if (!$employee) {
-            $contract->delete();
-            return redirect()->route('admin.contracts.index')
-            ->with('success', 'Xóa thông tin hợp đồng thành công');
-        }
-        $employeeCode = $employee->employee_code;
-        if ($contract->employees()->exists()) {
-            return redirect()->route('admin.contracts.index', ['employeeCode' => $employeeCode])
-                ->with('error', 'Không thể xóa hợp đồng này vì nó đang được sử dụng');
-        }
         $contract->delete();
-        return redirect()->route('admin.contracts.index', ['employeeCode' => $employeeCode])
+        $salaryDetail = SalaryDetail::findOrFail($contract->salary_detail_id);
+        if ($salaryDetail) {
+            $salaryDetail->delete();
+        }
+        return  back()
             ->with('success', 'Xóa thông tin hợp đồng thành công');
     }
 }

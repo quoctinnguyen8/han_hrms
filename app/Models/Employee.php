@@ -84,7 +84,6 @@ class Employee extends Authenticatable
 		'employee_position_code',
 		'status',
 		'department_code',
-		'contract_code',
 		'specialized_code',
 		'education_level_code',
 		'identity_card'
@@ -92,7 +91,7 @@ class Employee extends Authenticatable
 
 	public function contract()
 	{
-		return $this->belongsTo(Contract::class, 'contract_code');
+		return $this->hasMany(Contract::class, 'employee_code');
 	}
 
 	public function department()
