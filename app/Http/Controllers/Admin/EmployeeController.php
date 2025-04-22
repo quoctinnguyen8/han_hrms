@@ -284,7 +284,7 @@ class EmployeeController extends BaseController
             if (file_exists(public_path($employee->image)))
                 unlink(public_path($employee->image));
         }
-        $contracts = Contract::where('employee_code', $id)->get();
+        $contracts = Contract::where('employee_code', $id)->first();
         if ($contracts) {
             return redirect()->route('admin.employee.index')
                 ->with('error', 'Nhân viên này đang có hợp đồng, không thể xóa');
