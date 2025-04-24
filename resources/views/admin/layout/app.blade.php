@@ -91,7 +91,7 @@
                         </div>
 
                         @section('content')
-                            
+
                         @show
                     </div>
                     <!-- end page title -->

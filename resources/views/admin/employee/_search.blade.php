@@ -18,7 +18,7 @@
             <x-input name="full_name" label="Tên nhân viên" value="{{ request('full_name') }}" />
         </div>
         <div class="col-md-4">
-            <x-select name="department_code" label="Phòng ban" model="Department" 
+            <x-select name="department_code" label="Phòng ban" model="Department"
                 valueField="department_code" textField="department_name" selected="{{ request('department_code') }}" />
         </div>
     </div>

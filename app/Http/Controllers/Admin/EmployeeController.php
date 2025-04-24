@@ -11,10 +11,11 @@ use App\Models\EmployeePosition;
 use App\Models\SalaryDetail;
 use App\Models\Specialized;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
-class EmployeeController extends BaseController
+class EmployeeController extends Controller
 {
-
     private $fields = [
         'contract_code' => 'Mã hợp đồng',
         'employee_code' => 'Mã nhân viên',
@@ -59,7 +60,7 @@ class EmployeeController extends BaseController
         'ethnic' => 'required|string|max:10',
         'department_code' => 'required|exists:departments,department_code',
         'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
-        'contract_code' => 'required|unique:contracts',
+        'contract_code' => 'required|unique:contracts,contract_code',
         'specialized_code' => 'required|exists:specialized,specialized_code',
         'education_level_code' => 'required|exists:education_levels,education_level_code',
         'status' => 'required|boolean',
@@ -109,38 +110,36 @@ class EmployeeController extends BaseController
         'discipline_money.required' => 'Tiền kỷ luật là bắt buộc.',
         'pay_day.required' => 'Ngày trả lương là bắt buộc.',
     ];
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $query = Employee::select(
             'employee_code',
             'full_name',
             'hometown',
-            'phone_number'
-        );
+            'phone_number',
+            'department_code',
+            'status',
+            'created_at',
+            'created_by'
+        )
+        ->with('department')
+        ->orderBy('created_at', 'desc');
+
         if (request('employee_code')) {
-            // Tìm chính xác theo mã nhân viên
             $query->where('employee_code', request('employee_code'));
         }
         if (request('full_name')) {
-            // Tìm theo tên nhân viên
             $query->where('full_name', 'like', '%' . request('full_name') . '%');
         }
         if (request('department_code')) {
-            // Tìm theo mã phòng ban
             $query->where('department_code', request('department_code'));
         }
-        // xem câu sql
-        //dd($query->toSql());
+
         $employees = $query->paginate();
         return view('admin.employee.index', compact('employees'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $departments = Department::all();
@@ -157,14 +156,68 @@ class EmployeeController extends BaseController
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    private function generateUsername($full_name)
+    {
+        // Xóa dấu tiếng Việt
+        $full_name = $this->removeVietnameseAccents($full_name);
+
+        // Tách các phần của tên
+        $nameParts = explode(' ', trim($full_name));
+        $lastName = array_shift($nameParts);
+        $middleNames = $nameParts;
+        $firstName = array_pop($nameParts);
+
+        // Tạo username theo quy tắc
+        $username = strtolower($firstName);
+
+        // Thêm chữ cái đầu của họ
+        if (!empty($lastName)) {
+            $username .= substr(strtolower($lastName), 0, 1);
+        }
+
+        // Thêm chữ cái đầu của tên đệm
+        foreach ($middleNames as $middleName) {
+            if (!empty($middleName)) {
+                $username .= substr(strtolower($middleName), 0, 1);
+            }
+        }
+
+        // Kiểm tra và xử lý trùng username
+        $originalUsername = $username;
+        $counter = 1;
+
+        while (Employee::where('username', $username)->exists()) {
+            $counter++;
+            $username = $originalUsername . $counter;
+        }
+
+        return $username;
+    }
+
+    private function removeVietnameseAccents($str)
+    {
+        $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
+        $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
+        $str = preg_replace("/(ì|í|ị|ỉ|ĩ)/", 'i', $str);
+        $str = preg_replace("/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/", 'o', $str);
+        $str = preg_replace("/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/", 'u', $str);
+        $str = preg_replace("/(ỳ|ý|ỵ|ỷ|ỹ)/", 'y', $str);
+        $str = preg_replace("/(đ)/", 'd', $str);
+        return $str;
+    }
+
     public function store(Request $request)
     {
-        // Validate the request data
         $validated = $request->validate($this->rules, $this->msg, $this->fields);
 
+        // Tạo username tự động nếu không được cung cấp
+        if (empty($validated['username'])) {
+            $validated['username'] = $this->generateUsername($validated['full_name']);
+        }
+
+        $validated['status'] = $validated['status'] ? 1 : 0;
+
+        // Lưu hợp đồng
         $contract = new Contract();
         $contract->contract_code = $validated['contract_code'];
         $contract->contract_type = $validated['contract_type'];
@@ -174,38 +227,45 @@ class EmployeeController extends BaseController
         $contract->save();
 
         $validated['password'] = bcrypt($request->password);
-        $img = time() . '.' . $request->file('image')->getClientOriginalExtension();
-        $request->image->move(public_path('images/employees'), $img);
-        $validated['image'] = 'images/employees/' . $img;
+
+        // Lưu ảnh
+        $imagePath = $request->file('image')->store('employees', 'public');
+        $validated['image'] = $imagePath;
+
+        // Thêm thông tin người tạo
+        $validated['created_at'] = now();
+        $validated['created_by'] = Auth::user()->username;
+
+        $validated['contract_code'] = $validated['contract_code'];
         Employee::create($validated);
 
-        $salaryDetail = new SalaryDetail();
-        $salaryDetail->employee_code = $validated['employee_code'];
-        $salaryDetail->basic_salary = $validated['basic_salary'];
-        $salaryDetail->social_insurance = $validated['social_insurance'];
-        $salaryDetail->health_insurance = $validated['health_insurance'];
-        $salaryDetail->unemployment_insurance = $validated['unemployment_insurance'];
-        $salaryDetail->allowance = $validated['allowance'];
-        $salaryDetail->income_tax = $validated['income_tax'];
-        $salaryDetail->bonus_money = $validated['bonus_money'];
-        $salaryDetail->discipline_money = $validated['discipline_money'];
-        $salaryDetail->pay_day = $validated['pay_day'];
-        $salaryDetail->total_salary = $validated['basic_salary']
-            + $validated['allowance'] //phu cap
-            - $validated['income_tax'] //thue nhap ca nhan 
-            - $validated['discipline_money'] //tien ky luat
-            - $validated['social_insurance'] // bao hiem xa hoi
-            - $validated['health_insurance']  // bao hiem y te
-            - $validated['unemployment_insurance']; // bao hiem that nghiep
-        $salaryDetail->save();
+        // Tính toán và lưu thông tin lương
+        $totalSalary = $validated['basic_salary']
+            + $validated['allowance']
+            - $validated['income_tax']
+            - $validated['discipline_money']
+            - $validated['social_insurance']
+            - $validated['health_insurance']
+            - $validated['unemployment_insurance'];
+
+        SalaryDetail::create([
+            'employee_code' => $validated['employee_code'],
+            'basic_salary' => $validated['basic_salary'],
+            'social_insurance' => $validated['social_insurance'],
+            'health_insurance' => $validated['health_insurance'],
+            'unemployment_insurance' => $validated['unemployment_insurance'],
+            'allowance' => $validated['allowance'],
+            'income_tax' => $validated['income_tax'],
+            'bonus_money' => $validated['bonus_money'],
+            'discipline_money' => $validated['discipline_money'],
+            'pay_day' => $validated['pay_day'],
+            'total_salary' => $totalSalary,
+        ]);
 
         return redirect()->route('admin.employee.index')
             ->with('success', 'Nhân viên đã được tạo thành công');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $employee = Employee::findOrFail($id);
@@ -225,22 +285,19 @@ class EmployeeController extends BaseController
         ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $employee = Employee::findOrFail($id);
         $rules = [
-            'username' => 'required',
-            'full_name' => 'required|string|max:255',
+            'username' => 'required|unique:employees,username,' . $employee->employee_code . ',employee_code',
+            'full_name' => 'required|string|max:40',
             'birthday' => 'required|date',
-            'hometown' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'identity_card' => 'required|string|max:20',
+            'hometown' => 'required|string|max:90',
+            'phone_number' => 'required|string|max:11',
+            'identity_card' => 'nullable|string|max:50',
             'password' => 'nullable|string|min:8|confirmed',
             'gender' => 'required|boolean',
-            'ethnic' => 'required|string|max:50',
+            'ethnic' => 'required|string|max:10',
             'department_code' => 'required|exists:departments,department_code',
             'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
             'specialized_code' => 'required|exists:specialized,specialized_code',
@@ -252,48 +309,52 @@ class EmployeeController extends BaseController
             $rules['password'] = 'string|min:8';
         }
         $validated = $request->validate($rules);
+
+        $validated['status'] = $validated['status'] ? 1 : 0;
+
         if (!$request->filled('password')) {
             unset($validated['password']);
         } else {
             $validated['password'] = bcrypt($validated['password']);
         }
+
         if ($request->hasFile('image')) {
-            if ($employee->image && file_exists(public_path($employee->image))) {
-                unlink(public_path($employee->image));
+            // Xóa ảnh cũ nếu tồn tại
+            if ($employee->image) {
+                Storage::disk('public')->delete($employee->image);
             }
-            $img = time() . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->image->move(public_path('images/employees'), $img);
-            $validated['image'] = 'images/employees/' . $img;
+            // Lưu ảnh mới
+            $imagePath = $request->file('image')->store('employees', 'public');
+            $validated['image'] = $imagePath;
         } else {
             unset($validated['image']);
         }
+
         $employee->update($validated);
         return redirect()->route('admin.employee.edit', ['employee' => $employee->employee_code])
             ->with('success', 'Thông tin nhân viên đã được cập nhật thành công');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $employee = Employee::findOrFail($id);
 
+        // Xóa ảnh đại diện
         if ($employee->image) {
-            if (file_exists(public_path($employee->image)))
-                unlink(public_path($employee->image));
+            Storage::disk('public')->delete($employee->image);
         }
+
+        // Xóa hợp đồng liên quan
         if ($employee->contract_code) {
-            $contract = Contract::where('contract_code', $employee->contract_code)->first();
-            if ($contract) {
-                $contract->delete();
-            }
+            Contract::where('contract_code', $employee->contract_code)->delete();
         }
-        $salaryDetail = SalaryDetail::where('employee_code', $employee->employee_code)->first();
-        if ($salaryDetail) {
-            $salaryDetail->delete();
-        }
+
+        // Xóa thông tin lương
+        SalaryDetail::where('employee_code', $employee->employee_code)->delete();
+
+        // Xóa nhân viên
         $employee->delete();
+
         return redirect()->route('admin.employee.index')
             ->with('success', 'Nhân viên đã được xóa thành công');
     }
