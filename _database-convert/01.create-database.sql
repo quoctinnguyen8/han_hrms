@@ -60,6 +60,8 @@ CREATE TABLE employees (
     contract_code VARCHAR(30) COMMENT 'Mã hợp đồng của nhân viên',
     specialized_code VARCHAR(30) COMMENT 'Mã chuyên ngành của nhân viên',
     education_level_code VARCHAR(30) COMMENT 'Mã trình độ học vấn của nhân viên',
+    created_by INT NULL COMMENT 'ID của admin tạo nhân viên',
+    created_at TIMESTAMP NULL COMMENT 'Thời điểm tạo nhân viên',
     identity_card VARCHAR(50) COMMENT 'Số chứng minh nhân dân của nhân viên'
 );
 
@@ -199,6 +201,7 @@ ALTER TABLE employees ADD FOREIGN KEY (department_code) REFERENCES departments(d
 ALTER TABLE employees ADD FOREIGN KEY (education_level_code) REFERENCES education_levels(education_level_code);
 ALTER TABLE employees ADD FOREIGN KEY (employee_position_code) REFERENCES employee_positions(employee_position_code);
 ALTER TABLE employees ADD FOREIGN KEY (specialized_code) REFERENCES specialized(specialized_code);
+ALTER TABLE employees ADD CONSTRAINT fk_employees_created_by FOREIGN KEY (created_by) REFERENCES admins(id) ON DELETE SET NULL;
 
 ALTER TABLE after_universities ADD FOREIGN KEY (employee_code) REFERENCES employees(employee_code) ON DELETE CASCADE;
 ALTER TABLE bonuses ADD FOREIGN KEY (employee_code) REFERENCES employees(employee_code) ON DELETE CASCADE;

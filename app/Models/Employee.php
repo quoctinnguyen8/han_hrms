@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class Employee
- * 
+ *
  * @property string $employee_code
  * @property string|null $username
  * @property string|null $password
@@ -30,7 +30,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $specialized_code
  * @property string|null $education_level_code
  * @property string|null $identity_card
- * 
+ *
  * @property Contract|null $contract
  * @property Department|null $department
  * @property EducationLevel|null $education_level
@@ -87,6 +87,8 @@ class Employee extends Authenticatable
 		'contract_code',
 		'specialized_code',
 		'education_level_code',
+        'created_by',
+        'created_at',
 		'identity_card'
 	];
 
