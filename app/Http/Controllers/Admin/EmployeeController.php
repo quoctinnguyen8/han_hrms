@@ -173,7 +173,8 @@ class EmployeeController extends BaseController
         $contract->note = $validated['note'];
         $contract->save();
 
-        $validated['username'] = genUsername($validated['full_name']);
+        $validated['username'] = $this->generateUsername($validated['full_name']);
+
 
 
         $validated['status'] = 1;
@@ -186,7 +187,7 @@ class EmployeeController extends BaseController
         $request->image->move(public_path('images/employees'), $img);
         $validated['image'] = 'images/employees/' . $img;
 
-        Employee::create($validated);
+
          // Lưu nhân viên
          Employee::create($validated);
 
