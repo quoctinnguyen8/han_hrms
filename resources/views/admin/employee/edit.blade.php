@@ -24,13 +24,11 @@
                         <x-input :value="$employee->phone_number" label="Số điện thoại" name="phone_number" required />
                         <x-input :value="$employee->identity_card" label="CMND/CCCD" name="identity_card" />
 
-                        <div class="mb-3">
-                            <label class="form-label">Giới tính</label>
-                            <select class="form-select" name="gender">
-                                <option value="1" {{ $employee->gender == 1 ? 'selected' : '' }}>Nam</option>
-                                <option value="0" {{ $employee->gender == 0 ? 'selected' : '' }}>Nữ</option>
-                            </select>
-                        </div>
+                        <x-select name="gender" label="Giới tính" :selected="$employee->gender"
+                            :options="[
+                                ['label' => 'Nam', 'value' => 1],
+                                ['label' => 'Nữ', 'value' => 0]
+                            ]" />
                     </div>
 
                     <div class="col-md-6">
@@ -44,64 +42,46 @@
                             @endif
                             <input type="file" class="form-control" name="image" />
                         </div>
+
                         <x-input :value="$employee->ethnic" label="Dân tộc" name="ethnic" />
-                        <div class="mb-3">
-                            <label class="form-label">Phòng ban</label>
-                            <select class="form-select" name="department_code" required>
-                                @foreach ($departments as $department)
-                                    <option value="{{ $department->department_code }}"
-                                        {{ $employee->department_code == $department->department_code ? 'selected' : '' }}>
-                                        {{ $department->department_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Vị trí</label>
-                            <select class="form-select" name="employee_position_code">
-                                @foreach ($employeePositions as $position)
-                                    <option value="{{ $position->employee_position_code }}"
-                                        {{ $employee->employee_position_code == $position->position_code ? 'selected' : '' }}>
-                                        {{ $position->position_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Chuyên ngành</label>
-                            <select class="form-select" name="specialized_code">
-                                @foreach ($specializations as $specialization)
-                                    <option value="{{ $specialization->specialized_code }}"
-                                        {{ $employee->specialized_code == $specialization->specialized_code ? 'selected' : '' }}>
-                                        {{ $specialization->specialized_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Trình độ học vấn</label>
-                            <select class="form-select" name="education_level_code">
-                                @foreach ($educationLevels as $level)
-                                    <option value="{{ $level->education_level_code }}"
-                                        {{ $employee->education_level_code == $level->education_level_code ? 'selected' : '' }}>
-                                        {{ $level->education_level_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Trạng thái</label>
-                            <select class="form-select" name="status">
-                                <option value="1" {{ $employee->status == 1 ? 'selected' : '' }}>Đang làm việc
+                        <x-select name="department_code" label="Phòng ban" :selected="$employee->department_code">
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->department_code }}">
+                                    {{ $department->department_name }}
                                 </option>
-                                <option value="0" {{ $employee->status == 0 ? 'selected' : '' }}>Ngừng làm việc
+                            @endforeach
+                        </x-select>
+
+                        <x-select name="employee_position_code" label="Vị trí" :selected="$employee->employee_position_code">
+                            @foreach ($employeePositions as $position)
+                                <option value="{{ $position->employee_position_code }}">
+                                    {{ $position->position_name }}
                                 </option>
-                            </select>
-                        </div>
+                            @endforeach
+                        </x-select>
+
+                        <x-select name="specialized_code" label="Chuyên ngành" :selected="$employee->specialized_code">
+                            @foreach ($specializations as $specialization)
+                                <option value="{{ $specialization->specialized_code }}">
+                                    {{ $specialization->specialized_name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+
+                        <x-select name="education_level_code" label="Trình độ học vấn" :selected="$employee->education_level_code">
+                            @foreach ($educationLevels as $level)
+                                <option value="{{ $level->education_level_code }}">
+                                    {{ $level->education_level_name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+
+                        <x-select name="status" label="Trạng thái" :selected="$employee->status"
+                            :options="[
+                                ['label' => 'Đang làm việc', 'value' => 1],
+                                ['label' => 'Ngừng làm việc', 'value' => 0]
+                            ]" />
                     </div>
                 </div>
 
