@@ -56,6 +56,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('contracts', ContractController::class);
         // Đăng xuất
         Route::get('logout', [AdminAccountController::class, 'logout'])->name('logout');
+
+        // Thay đổi mật khẩu
+        Route::get('change-password', [AdminAccountController::class, 'changePasswordView'])->name('changePasswordView');
+        Route::post('change-password', [AdminAccountController::class, 'changePassword'])->name('changePassword');
     });
 });
 

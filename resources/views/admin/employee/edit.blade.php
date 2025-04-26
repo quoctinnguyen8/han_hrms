@@ -26,8 +26,8 @@
 
                         <x-select name="gender" label="Giới tính" :selected="$employee->gender"
                             :options="[
-                                ['label' => 'Nam', 'value' => 1],
-                                ['label' => 'Nữ', 'value' => 0]
+                                '1'=>'Nam',
+                                '0'=>'Nữ'
                             ]" />
                     </div>
 
@@ -45,42 +45,18 @@
 
                         <x-input :value="$employee->ethnic" label="Dân tộc" name="ethnic" />
 
-                        <x-select name="department_code" label="Phòng ban" :selected="$employee->department_code">
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->department_code }}">
-                                    {{ $department->department_name }}
-                                </option>
-                            @endforeach
-                        </x-select>
+                        <x-select name="department_code" label="Phòng ban" valueField="department_code" textField="department_name" model="Department" :selected="$employee->department_code" />
 
-                        <x-select name="employee_position_code" label="Vị trí" :selected="$employee->employee_position_code">
-                            @foreach ($employeePositions as $position)
-                                <option value="{{ $position->employee_position_code }}">
-                                    {{ $position->position_name }}
-                                </option>
-                            @endforeach
-                        </x-select>
+                        <x-select name="employee_position_code" label="Vị trí" valueField="employee_position_code" textField="position_name" model="EmployeePosition" :selected="$employee->employee_position_code" />
 
-                        <x-select name="specialized_code" label="Chuyên ngành" :selected="$employee->specialized_code">
-                            @foreach ($specializations as $specialization)
-                                <option value="{{ $specialization->specialized_code }}">
-                                    {{ $specialization->specialized_name }}
-                                </option>
-                            @endforeach
-                        </x-select>
+                        <x-select name="specialized_code" label="Chuyên ngành" valueField="specialized_code" textField="specialized_name" model="Specialized" :selected="$employee->specialized_code" />
 
-                        <x-select name="education_level_code" label="Trình độ học vấn" :selected="$employee->education_level_code">
-                            @foreach ($educationLevels as $level)
-                                <option value="{{ $level->education_level_code }}">
-                                    {{ $level->education_level_name }}
-                                </option>
-                            @endforeach
-                        </x-select>
+                        <x-select name="education_level_code" label="Trình độ học vấn" valueField="education_level_code" textField="education_level_name" model="EducationLevel" :selected="$employee->education_level_code" />
 
-                        <x-select name="status" label="Trạng thái" :selected="$employee->status"
+                        <x-select name="status" id="e_status" label="Trạng thái" :selected="$employee->status"
                             :options="[
-                                ['label' => 'Đang làm việc', 'value' => 1],
-                                ['label' => 'Ngừng làm việc', 'value' => 0]
+                                '1' => 'Đang làm việc',
+                                '0' => 'Ngừng làm việc'
                             ]" />
                     </div>
                 </div>

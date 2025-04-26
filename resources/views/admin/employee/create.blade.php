@@ -7,7 +7,7 @@
         <form id="fCreateEmployee" novalidate action="{{ route('admin.employee.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="d-flex justify-content-end mt-3">
-                <input type="submit" class="btn btn-success" value="Thêm mới" />
+                <input type="submit" class="btn btn-success" id="btnCreateEmployee" value="Thêm mới" />
             </div>
             <ul class="nav nav-tabs nav-border-top" id="employeeTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -26,7 +26,7 @@
                         <h5 class="mb-3">Thông tin nhân viên</h5>
                         <div class="col-md-6">
                             <x-input label="Mã nhân viên" name="employee_code" required />
-                            <x-input label="Tên đăng nhập" name="username" />
+                            <x-input label="Tên đăng nhập" name="username" placeholder="Tên đăng nhập sẽ được tạo tự động" />
                             <x-input label="Mật khẩu" name="password" type="password" />
                             <x-input label="Nhập lại mật khẩu" name="password_confirmation" type="password" />
                             <x-input label="Họ và tên" name="full_name" required />
@@ -42,12 +42,9 @@
                             </div>
 
                             <x-select name="gender" label="Giới tính" :selected="old('gender')"
-                                :options="[
-                                    ['label' => 'Nam', 'value' => 1],
-                                    ['label' => 'Nữ', 'value' => 0]
-                                ]" required />
+                                :options="['1' => 'Nam', '0' => 'Nữ']" required />
 
-                            <x-input label="Dân tộc" name="ethnic" :value="old('ethnic')" />
+                            <x-input label="Dân tộc" name="ethnic" :selected="old('ethnic')" />
 
                             <x-select name="department_code" label="Phòng ban" model="Department" valueField="department_code" textField="department_name" :selected="old('department_code')" required />
 
@@ -57,9 +54,9 @@
 
                             <x-select name="education_level_code" label="Trình độ học vấn" model="EducationLevel" valueField="education_level_code" textField="education_level_name" :selected="old('education_level_code')" />
 
-                            <x-select name="status" label="Trạng thái" :options="[
-                                ['label' => 'Đang làm việc', 'value' => 1],
-                                ['label' => 'Ngừng làm việc', 'value' => 0]
+                            <x-select name="status" id="e_status" label="Trạng thái" :options="[
+                                '1'=> 'Đang làm việc',
+                                '0'=> 'Ngừng làm việc'
                             ]" :selected="old('status')" required />
                         </div>
                     </div>
