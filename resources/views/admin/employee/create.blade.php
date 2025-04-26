@@ -7,7 +7,7 @@
         <form id="fCreateEmployee" novalidate action="{{ route('admin.employee.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="d-flex justify-content-end mt-3">
-                <input type="button" id="btnCreateEmployee" class="btn btn-success" value="Thêm mới" />
+                <input type="submit" class="btn btn-success" value="Thêm mới" />
             </div>
             <ul class="nav nav-tabs nav-border-top" id="employeeTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -40,67 +40,27 @@
                                 <label class="form-label">Ảnh đại diện</label>
                                 <input type="file" class="form-control" name="image" />
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Giới tính</label>
-                                <select class="form-select" name="gender">
-                                    <option value="" disabled {{ old('gender') === null ? 'selected' : '' }}>Chọn giới tính</option>
-                                    <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Nam</option>
-                                    <option value="0" {{ old('gender') == '0' ? 'selected' : '' }}>Nữ</option>
-                                </select>
-                            </div>
+
+                            <x-select name="gender" label="Giới tính" :selected="old('gender')"
+                                :options="[
+                                    ['label' => 'Nam', 'value' => 1],
+                                    ['label' => 'Nữ', 'value' => 0]
+                                ]" required />
+
                             <x-input label="Dân tộc" name="ethnic" :value="old('ethnic')" />
-                            <div class="mb-3">
-                                <label class="form-label">Phòng ban</label>
-                                <select class="form-select" name="department_code" required>
-                                    <option value="" disabled {{ old('department_code') === null ? 'selected' : '' }}>Chọn phòng ban</option>
-                                    @foreach ($departments as $department)
-                                        <option value="{{ $department->department_code }}" {{ old('department_code') == $department->department_code ? 'selected' : '' }}>
-                                            {{ $department->department_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Vị trí</label>
-                                <select class="form-select" name="employee_position_code">
-                                    <option value="" disabled {{ old('employee_position_code') === null ? 'selected' : '' }}>Chọn vị trí</option>
-                                    @foreach ($employeePositions as $position)
-                                        <option value="{{ $position->employee_position_code }}" {{ old('employee_position_code') == $position->employee_position_code ? 'selected' : '' }}>
-                                            {{ $position->position_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Chuyên ngành</label>
-                                <select class="form-select" name="specialized_code">
-                                    <option value="" disabled {{ old('specialized_code') === null ? 'selected' : '' }}>Chọn chuyên ngành</option>
-                                    @foreach ($specializations as $specialization)
-                                        <option value="{{ $specialization->specialized_code }}" {{ old('specialized_code') == $specialization->specialized_code ? 'selected' : '' }}>
-                                            {{ $specialization->specialized_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Trình độ học vấn</label>
-                                <select class="form-select" name="education_level_code">
-                                    <option value="" disabled {{ old('education_level_code') === null ? 'selected' : '' }}>Chọn trình độ học vấn</option>
-                                    @foreach ($educationLevels as $level)
-                                        <option value="{{ $level->education_level_code }}" {{ old('education_level_code') == $level->education_level_code ? 'selected' : '' }}>
-                                            {{ $level->education_level_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Trạng thái</label>
-                                <select class="form-select" name="status">
-                                    <option value="" disabled {{ old('status') === null ? 'selected' : '' }}>Chọn trạng thái</option>
-                                    <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Đang làm việc</option>
-                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Ngừng làm việc</option>
-                                </select>
-                            </div>
+
+                            <x-select name="department_code" label="Phòng ban" model="Department" valueField="department_code" textField="department_name" :selected="old('department_code')" required />
+
+                            <x-select name="employee_position_code" label="Vị trí" model="EmployeePosition" valueField="employee_position_code" textField="position_name" :selected="old('employee_position_code')" />
+
+                            <x-select name="specialized_code" label="Chuyên ngành" model="Specialized" valueField="specialized_code" textField="specialized_name" :selected="old('specialized_code')" />
+
+                            <x-select name="education_level_code" label="Trình độ học vấn" model="EducationLevel" valueField="education_level_code" textField="education_level_name" :selected="old('education_level_code')" />
+
+                            <x-select name="status" label="Trạng thái" :options="[
+                                ['label' => 'Đang làm việc', 'value' => 1],
+                                ['label' => 'Ngừng làm việc', 'value' => 0]
+                            ]" :selected="old('status')" required />
                         </div>
                     </div>
                 </div>
