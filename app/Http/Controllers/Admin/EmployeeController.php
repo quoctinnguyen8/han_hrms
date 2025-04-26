@@ -162,16 +162,7 @@ class EmployeeController extends BaseController
      */
     public function store(Request $request)
     {
-        // Validate the request data
         $validated = $request->validate($this->rules, $this->msg, $this->fields);
-
-        $contract = new Contract();
-        $contract->contract_code = $validated['contract_code'];
-        $contract->contract_type = $validated['contract_type'];
-        $contract->start_date = $validated['start_date'];
-        $contract->end_date = $validated['end_date'];
-        $contract->note = $validated['note'];
-        $contract->save();
 
         $validated['password'] = bcrypt($request->password);
         $img = time() . '.' . $request->file('image')->getClientOriginalExtension();
@@ -191,6 +182,7 @@ class EmployeeController extends BaseController
         $salaryDetail->discipline_money = $validated['discipline_money'];
         $salaryDetail->pay_day = $validated['pay_day'];
         $salaryDetail->total_salary = $validated['basic_salary']
+            + $validated['bonus_money'] //tien thuong
             + $validated['allowance'] //phu cap
             - $validated['income_tax'] //thue nhap ca nhan 
             - $validated['discipline_money'] //tien ky luat
@@ -198,6 +190,16 @@ class EmployeeController extends BaseController
             - $validated['health_insurance']  // bao hiem y te
             - $validated['unemployment_insurance']; // bao hiem that nghiep
         $salaryDetail->save();
+
+        $contract = new Contract();
+        $contract->salary_detail_id = $salaryDetail->id;
+        $contract->contract_code = $validated['contract_code'];
+        $contract->employee_code = $validated['employee_code'];
+        $contract->contract_type = $validated['contract_type'];
+        $contract->start_date = $validated['start_date'];
+        $contract->end_date = $validated['end_date'];
+        $contract->note = $validated['note'];
+        $contract->save();
 
         return redirect()->route('admin.employee.index')
             ->with('success', 'Nhân viên đã được tạo thành công');
@@ -278,20 +280,14 @@ class EmployeeController extends BaseController
     public function destroy(string $id)
     {
         $employee = Employee::findOrFail($id);
-
         if ($employee->image) {
             if (file_exists(public_path($employee->image)))
                 unlink(public_path($employee->image));
         }
-        if ($employee->contract_code) {
-            $contract = Contract::where('contract_code', $employee->contract_code)->first();
-            if ($contract) {
-                $contract->delete();
-            }
-        }
-        $salaryDetail = SalaryDetail::where('employee_code', $employee->employee_code)->first();
-        if ($salaryDetail) {
-            $salaryDetail->delete();
+        $contracts = Contract::where('employee_code', $id)->first();
+        if ($contracts) {
+            return redirect()->route('admin.employee.index')
+                ->with('error', 'Nhân viên này đang có hợp đồng, không thể xóa');
         }
         $employee->delete();
         return redirect()->route('admin.employee.index')
