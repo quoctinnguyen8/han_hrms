@@ -1,8 +1,3 @@
-
-INSERT INTO contracts (contract_code, contract_type, start_date, end_date, note) VALUES 
-('0001', 'Nhân viên chính thức', '2020-12-20', '2024-12-20', 'abc'),
-('0002', 'Thử việc', '2020-12-20', '2024-12-20', 'abcd');
-
 INSERT INTO departments (department_code, department_name, address, department_phone_number) VALUES 
 ('cntt', 'Công nghệ thông tin', 'Lầu 1 nhà H', '0826625621'),
 ('daotao', 'Đào tạo', 'Lầu 2 nhà A', '029348472'),
@@ -37,9 +32,9 @@ INSERT INTO specialized (specialized_code, specialized_name) VALUES
 INSERT INTO unit_used (unit_used_name, school_name, address, phone_number, email, salary_increase_period) VALUES 
 ('Đơn vị xxxxxxxxxxxx', 'Trường xxxxxxxxxxxx', 'xxxxxxxxxxxxxxxxxx', 'xxxxxxx', 'xxxxx@gmail.COM', '2 năm');
 
-INSERT INTO employees (employee_code, username, password, full_name, birthday, hometown, image, gender, ethnic, phone_number, employee_position_code, status, department_code, contract_code, specialized_code, education_level_code, identity_card) VALUES 
-('1', 'thientran', '123456', 'Trần Văn Thiện', '1970-06-20', 'Cà Mau', 'C:/Users/ADMIN/Downloads/anh-meo-2.jpg', 1, 'Kinh', '0123456789', 'tp', 1, 'cntt', '0001', 'cntt', 'ths', '123456789'),
-('2', 'chithanh', '123456789', 'Nguyễn Chí Thành', '2002-02-02', 'Cà Mau', 'C:/Users/ADMIN/Downloads/8.jpg', 0, 'Kinh', '123456789', 'tp', 1, 'ketoan', '0001', 'cntt', 'ths', '123456789');
+INSERT INTO employees (employee_code, username, password, full_name, birthday, hometown, image, gender, ethnic, phone_number, employee_position_code, status, department_code, specialized_code, education_level_code, identity_card) VALUES 
+('1', 'thientran', '123456', 'Trần Văn Thiện', '1970-06-20', 'Cà Mau', 'C:/Users/ADMIN/Downloads/anh-meo-2.jpg', 1, 'Kinh', '0123456789', 'tp', 1, 'cntt', 'cntt', 'ths', '123456789'),
+('2', 'chithanh', '123456789', 'Nguyễn Chí Thành', '2002-02-02', 'Cà Mau', 'C:/Users/ADMIN/Downloads/8.jpg', 0, 'Kinh', '123456789', 'tp', 1, 'ketoan', 'cntt', 'ths', '123456789');
 
 INSERT INTO salaries (employee_code, minimum_salary, salary_coefficient, social_insurance, health_insurance, unemployment_insurance, allowance, income_tax) VALUES 
 ('1', 0, 0, 0, 0, 0, 0, 0),
@@ -52,3 +47,7 @@ INSERT INTO salary_details (employee_code, basic_salary, social_insurance, healt
 INSERT INTO salary_updates (employee_code, current_salary, salary_after_update, salary_coefficient, social_insurance, health_insurance, unemployment_insurance, allowance, income_tax, update_day) VALUES 
 ('1', 0, 0, 0, 0, 0, 0, 0, 0, '2024-07-07'),
 ('2', 5000000, 5000000, 4, 0, 0, 0, 0, 0, '2024-07-07');
+
+INSERT INTO contracts (contract_code, contract_type, start_date, end_date, note, employee_code, salary_detail_id) VALUES
+('0001', 'Nhân viên chính thức', '2020-12-20', '2024-12-20', 'abc', '1', '1'),
+('0002', 'Thử việc', '2020-12-20', '2024-12-20', 'abcd', '2', '2');

@@ -65,4 +65,8 @@ class SalaryDetail extends Model
 	{
 		return $this->belongsTo(Employee::class, 'employee_code');
 	}
+	public function contract()
+	{
+		return $this->hasMany(Contract::class, 'salary_detail_id');
+	}
 }
