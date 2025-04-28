@@ -165,6 +165,13 @@ class EmployeeController extends BaseController
         $validated = $request->validate($this->rules, $this->msg, $this->fields);
 
         $validated['username'] = $this->generateUsername($validated['full_name']);
+        // kiểm tra username có bị trùng không, nếu trùng thì thêm số vào sau
+        $countUsername = Employee::where('username', 'like', $validated['username'] . "%")->count();
+        if ($countUsername > 0) {
+            $validated['username'] = $validated['username'] . ($countUsername + 1);
+        } else {
+            $validated['username'] = $validated['username'];
+        }
         $validated['status'] = 1;
         $validated['created_by'] = auth()->guard('admin')->id();
         $validated['created_at'] = now();
