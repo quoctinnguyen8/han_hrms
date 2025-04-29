@@ -83,5 +83,12 @@ return [
         'name' => 'Hợp đồng',
         'icon' => 'ri-file-list-3-line',
         'route' => 'admin.contracts.index',
+    ],
+    [
+        'key' => 'admin.management.list',
+        'name' => 'Quản lý tài khoản',
+        'icon' => 'ri-user-settings-line',
+        'route' => 'admin.management.index',
+        'is_account_mnt' => true,
     ]
 ];

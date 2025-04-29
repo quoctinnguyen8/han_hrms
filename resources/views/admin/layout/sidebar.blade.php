@@ -38,7 +38,7 @@
 
                 @foreach ($menu as $m)
                     @if (isset($m['title']))
-                        <li class="menu-title"><span data-key="t-{{ $m['title'] }}">{{$m['title']}}</span></li>
+                        <li class="menu-title"><span data-key="t-{{ $m['title'] }}">{{ $m['title'] }}</span></li>
                         @continue
                     @endif
                     @if (!empty($m['children']))
@@ -60,13 +60,23 @@
                                 </ul>
                             </div>
                         </li>
-                    @else
+                    @elseif(isset($m['is_account_mnt']) && Auth::guard('admin')->user()->is_account_mnt)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ $m['route'] == '#' ? '#' : route($m['route']) }}">
                                 <i class="{{ $m['icon'] }}"></i> <span
                                     data-key="{{ $m['key'] }}">{{ $m['name'] }}</span>
                             </a>
                         </li>
+                    @else
+                        @if (!isset($m['is_account_mnt']))
+                            <li class="nav-item">
+                                <a class="nav-link menu-link"
+                                    href="{{ $m['route'] == '#' ? '#' : route($m['route']) }}">
+                                    <i class="{{ $m['icon'] }}"></i> <span
+                                        data-key="{{ $m['key'] }}">{{ $m['name'] }}</span>
+                                </a>
+                            </li>
+                        @endif
                     @endif
                 @endforeach
 
@@ -78,14 +88,14 @@
     <div class="sidebar-background"></div>
     <input type="hidden" id="sidebar-key" value="@yield('sidebar-key', '')">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             var sidebarKey = document.getElementById('sidebar-key').value;
             if (sidebarKey) {
                 var sidebarElement = document.querySelector('[data-key="' + sidebarKey + '"]');
                 // check thẻ là span hay a
                 if (sidebarElement.tagName === 'SPAN') {
                     sidebarElement = sidebarElement.closest('a').classList.add('active');
-                }else{
+                } else {
                     sidebarElement.classList.add('active');
                 }
 
