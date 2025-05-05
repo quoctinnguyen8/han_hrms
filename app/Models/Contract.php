@@ -39,11 +39,17 @@ class Contract extends Model
 		'contract_type',
 		'start_date',
 		'end_date',
-		'note'
+		'note',
+		'salary_detail_id',
+		'employee_code'
 	];
 
 	public function employees()
 	{
-		return $this->hasMany(Employee::class, 'contract_code');
+		return $this->belongsTo(Employee::class, 'employee_code');
+	}
+	public function salaryDetail()
+	{
+		return $this->belongsTo(SalaryDetail::class, 'salary_detail_id');
 	}
 }

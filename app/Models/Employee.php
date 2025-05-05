@@ -8,7 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class Employee
@@ -36,24 +36,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property EducationLevel|null $education_level
  * @property EmployeePosition|null $employee_position
  * @property Specialized|null $specialized
- * @property AfterUniversity|null $after_university
- * @property Bonus|null $bonus
- * @property Discipline|null $discipline
+ * @property Collection|AfterUniversity[] $after_universities
+ * @property Collection|Bonus[] $bonuses
+ * @property Collection|Discipline[] $disciplines
  * @property Collection|EducationLevelUpdate[] $education_level_updates
  * @property Collection|EmployeeRotation[] $employee_rotations
- * @property ForeignLanguage|null $foreign_language
+ * @property Collection|ForeignLanguage[] $foreign_languages
  * @property QuitJob|null $quit_job
- * @property Salary|null $salary
- * @property SalaryDetail|null $salary_detail
- * @property SalaryUpdate|null $salary_update
- * @property ScientificResearchTopic|null $scientific_research_topic
- * @property ScientificWork|null $scientific_work
- * @property University|null $university
- * @property WorkingProcess|null $working_process
+ * @property Collection|Salary[] $salaries
+ * @property Collection|SalaryDetail[] $salary_details
+ * @property Collection|SalaryUpdate[] $salary_updates
+ * @property Collection|ScientificResearchTopic[] $scientific_research_topics
+ * @property Collection|ScientificWork[] $scientific_works
+ * @property Collection|University[] $universities
+ * @property Collection|WorkingProcess[] $working_processes
  *
  * @package App\Models
  */
-class Employee extends Model
+class Employee extends Authenticatable
 {
 	protected $table = 'employees';
 	protected $primaryKey = 'employee_code';
@@ -71,6 +71,7 @@ class Employee extends Model
 	];
 
 	protected $fillable = [
+		'employee_code',
 		'username',
 		'password',
 		'full_name',
@@ -83,7 +84,6 @@ class Employee extends Model
 		'employee_position_code',
 		'status',
 		'department_code',
-		'contract_code',
 		'specialized_code',
 		'education_level_code',
 		'identity_card'
@@ -91,7 +91,7 @@ class Employee extends Model
 
 	public function contract()
 	{
-		return $this->belongsTo(Contract::class, 'contract_code');
+		return $this->hasMany(Contract::class, 'employee_code');
 	}
 
 	public function department()
@@ -114,19 +114,19 @@ class Employee extends Model
 		return $this->belongsTo(Specialized::class, 'specialized_code');
 	}
 
-	public function after_university()
+	public function after_universities()
 	{
-		return $this->hasOne(AfterUniversity::class, 'employee_code');
+		return $this->hasMany(AfterUniversity::class, 'employee_code');
 	}
 
-	public function bonus()
+	public function bonuses()
 	{
-		return $this->hasOne(Bonus::class, 'employee_code');
+		return $this->hasMany(Bonus::class, 'employee_code');
 	}
 
-	public function discipline()
+	public function disciplines()
 	{
-		return $this->hasOne(Discipline::class, 'employee_code');
+		return $this->hasMany(Discipline::class, 'employee_code');
 	}
 
 	public function education_level_updates()
@@ -139,9 +139,9 @@ class Employee extends Model
 		return $this->hasMany(EmployeeRotation::class, 'employee_code');
 	}
 
-	public function foreign_language()
+	public function foreign_languages()
 	{
-		return $this->hasOne(ForeignLanguage::class, 'employee_code');
+		return $this->hasMany(ForeignLanguage::class, 'employee_code');
 	}
 
 	public function quit_job()
@@ -149,38 +149,38 @@ class Employee extends Model
 		return $this->hasOne(QuitJob::class, 'employee_code');
 	}
 
-	public function salary()
+	public function salaries()
 	{
-		return $this->hasOne(Salary::class, 'employee_code');
+		return $this->hasMany(Salary::class, 'employee_code');
 	}
 
-	public function salary_detail()
+	public function salary_details()
 	{
-		return $this->hasOne(SalaryDetail::class, 'employee_code');
+		return $this->hasMany(SalaryDetail::class, 'employee_code');
 	}
 
-	public function salary_update()
+	public function salary_updates()
 	{
-		return $this->hasOne(SalaryUpdate::class, 'employee_code');
+		return $this->hasMany(SalaryUpdate::class, 'employee_code');
 	}
 
-	public function scientific_research_topic()
+	public function scientific_research_topics()
 	{
-		return $this->hasOne(ScientificResearchTopic::class, 'employee_code');
+		return $this->hasMany(ScientificResearchTopic::class, 'employee_code');
 	}
 
-	public function scientific_work()
+	public function scientific_works()
 	{
-		return $this->hasOne(ScientificWork::class, 'employee_code');
+		return $this->hasMany(ScientificWork::class, 'employee_code');
 	}
 
-	public function university()
+	public function universities()
 	{
-		return $this->hasOne(University::class, 'employee_code');
+		return $this->hasMany(University::class, 'employee_code');
 	}
 
-	public function working_process()
+	public function working_processes()
 	{
-		return $this->hasOne(WorkingProcess::class, 'employee_code');
+		return $this->hasMany(WorkingProcess::class, 'employee_code');
 	}
 }
