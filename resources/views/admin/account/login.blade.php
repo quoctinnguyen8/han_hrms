@@ -54,7 +54,6 @@
                                 <div class="p-2 mt-4">
                                     <form action="{{ route('admin.postLogin') }}" method="POST">
                                         @csrf
-                                        <x-notify closeButton="false" />
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Tên đăng nhập</label>
                                             <input type="text" class="form-control" name="username" id="username" placeholder="Enter username">

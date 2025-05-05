@@ -87,7 +87,6 @@
                                 </div> --}}
 
                             </div>
-                            <x-notify></x-notify>
                         </div>
 
                         @section('content')

@@ -33,7 +33,7 @@ return [
             [
                 'key' => 'admin.departments',
                 'name' => 'Phòng ban',
-                'route' => 'admin.departments.index',
+                'route' => '#',
             ],
             [
                 'key' => 'admin.employee.list',
