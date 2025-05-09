@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\DisciplineController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\ForeignLanguageController;
+use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\ScientificResearchTopicController;
 use App\Http\Controllers\Admin\ScientificWorkController;
 
@@ -31,6 +32,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Đăng nhập
     Route::get('login', [AdminAccountController::class, 'login'])->name('login');
     Route::post('login', [AdminAccountController::class, 'postLogin'])->name('postLogin');
+    Route::resource('management', ManagementController::class);
 
     // Các route cần đăng nhập admin
     Route::middleware(AdminAuthenticated::class)->group(function () {

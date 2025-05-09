@@ -11,6 +11,7 @@ use App\Models\EmployeePosition;
 use App\Models\SalaryDetail;
 use App\Models\Specialized;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends BaseController
 {
@@ -181,8 +182,8 @@ class EmployeeController extends BaseController
         $request->image->move(public_path('images/employees'), $img);
         $validated['image'] = 'images/employees/' . $img;
 
-         // Lưu nhân viên
-         Employee::create($validated);
+        // Lưu nhân viên
+        Employee::create($validated);
 
         $salaryDetail = new SalaryDetail();
         $salaryDetail->employee_code = $validated['employee_code'];
@@ -293,6 +294,10 @@ class EmployeeController extends BaseController
      */
     public function destroy(string $id)
     {
+        if (Auth::guard('admin')->user()->is_del_empl == 0) {
+            return redirect()->route('admin.employee.index')
+                ->with('error', 'Bạn không có quyền xóa nhân viên này.');
+        }
         $employee = Employee::findOrFail($id);
         if ($employee->image) {
             if (file_exists(public_path($employee->image)))
@@ -308,29 +313,27 @@ class EmployeeController extends BaseController
             ->with('success', 'Nhân viên đã được xóa thành công');
     }
     private function generateUsername(string $fullname): string
-{
-    $segments = explode(" ", trim($fullname));
-    $name = array_pop($segments);
-    $initials = '';
-    foreach ($segments as $part) {
-        if (!empty($part)) {
-            $initials .= mb_substr($part, 0, 1);
+    {
+        $segments = explode(" ", trim($fullname));
+        $name = array_pop($segments);
+        $initials = '';
+        foreach ($segments as $part) {
+            if (!empty($part)) {
+                $initials .= mb_substr($part, 0, 1);
+            }
         }
+
+        $raw = $name . $initials;
+        $username = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $raw);
+        $username = str_replace(['đ', 'Đ'], ['d', 'D'], $username);
+        $username = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $username));
+
+        $original = $username;
+        $i = 2;
+        while (Employee::where('username', $username)->exists()) {
+            $username = $original . $i++;
+        }
+
+        return $username;
     }
-
-    $raw = $name . $initials;
-    $username = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $raw);
-    $username = str_replace(['đ', 'Đ'], ['d', 'D'], $username);
-    $username = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $username));
-
-    $original = $username;
-    $i = 2;
-    while (Employee::where('username', $username)->exists()) {
-        $username = $original . $i++;
-    }
-
-    return $username;
 }
-
-}
-
