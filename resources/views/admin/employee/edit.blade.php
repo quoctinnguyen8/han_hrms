@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <x-input :value="$employee->employee_code" readonly label="Mã nhân viên" name="employee_code" required />
-                        <x-input :value="$employee->username" label="Tên đăng nhập" name="username" />
+                        <x-input :value="$employee->username" label="Tên đăng nhập" disabled name="username" />
                         <x-input label="Mật khẩu" name="password" type="password"
                             placeholder="Để trống nếu không thay đổi" />
                         <x-input :value="$employee->full_name" label="Họ và tên" name="full_name" required />
@@ -53,7 +53,7 @@
 
                         <x-select name="education_level_code" label="Trình độ học vấn" valueField="education_level_code" textField="education_level_name" model="EducationLevel" :selected="$employee->education_level_code" />
 
-                        <x-select name="status" id="e_status" label="Trạng thái" :selected="$employee->status"
+                        <x-select name="status" id="e_status" label="Trạng thái" disabled :selected="$employee->status"
                             :options="[
                                 '1' => 'Đang làm việc',
                                 '0' => 'Ngừng làm việc'

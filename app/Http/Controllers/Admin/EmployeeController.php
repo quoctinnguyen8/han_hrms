@@ -47,7 +47,6 @@ class EmployeeController extends BaseController
 
     private $rules = [
         'employee_code' => 'required|string|max:20|unique:employees,employee_code',
-        'username' => 'nullable|unique:employees,username|string|max:20',
         'password' => 'required|string|min:8|confirmed',
         'password_confirmation' => 'required|string|min:8',
         'full_name' => 'required|string|max:40',
@@ -62,7 +61,6 @@ class EmployeeController extends BaseController
         'contract_code' => 'required|unique:contracts',
         'specialized_code' => 'required|exists:specialized,specialized_code',
         'education_level_code' => 'required|exists:education_levels,education_level_code',
-        'status' => 'required|boolean',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         'contract_type' => 'required|string',
         'start_date' => 'required|date|before_or_equal:end_date|after_or_equal:today',
@@ -132,6 +130,13 @@ class EmployeeController extends BaseController
             // Tìm theo mã phòng ban
             $query->where('department_code', request('department_code'));
         }
+        if (request('status') !== null) {
+            $query->where('status', request('status'));
+        } else {
+            // Mặc định chỉ hiển thị nhân viên đang làm
+            $query->where('status', 1);
+        }
+
         // xem câu sql
         //dd($query->toSql());
         $employees = $query->orderByDesc('created_at')->paginate();
@@ -181,8 +186,8 @@ class EmployeeController extends BaseController
         $request->image->move(public_path('images/employees'), $img);
         $validated['image'] = 'images/employees/' . $img;
 
-         // Lưu nhân viên
-         Employee::create($validated);
+        // Lưu nhân viên
+        Employee::create($validated);
 
         $salaryDetail = new SalaryDetail();
         $salaryDetail->employee_code = $validated['employee_code'];
@@ -248,7 +253,6 @@ class EmployeeController extends BaseController
     {
         $employee = Employee::findOrFail($id);
         $rules = [
-            'username' => 'required',
             'full_name' => 'required|string|max:255',
             'birthday' => 'required|date',
             'hometown' => 'required|string|max:255',
@@ -261,7 +265,6 @@ class EmployeeController extends BaseController
             'employee_position_code' => 'required|exists:employee_positions,employee_position_code',
             'specialized_code' => 'required|exists:specialized,specialized_code',
             'education_level_code' => 'required|exists:education_levels,education_level_code',
-            'status' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
         if ($request->filled('password')) {
@@ -308,29 +311,32 @@ class EmployeeController extends BaseController
             ->with('success', 'Nhân viên đã được xóa thành công');
     }
     private function generateUsername(string $fullname): string
-{
-    $segments = explode(" ", trim($fullname));
-    $name = array_pop($segments);
-    $initials = '';
-    foreach ($segments as $part) {
-        if (!empty($part)) {
-            $initials .= mb_substr($part, 0, 1);
+    {
+        $segments = explode(" ", trim($fullname));
+        $name = array_pop($segments);
+        $initials = '';
+        foreach ($segments as $part) {
+            if (!empty($part)) {
+                $initials .= mb_substr($part, 0, 1);
+            }
         }
+
+        $raw = $name . $initials;
+        $username = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $raw);
+        $username = str_replace(['đ', 'Đ'], ['d', 'D'], $username);
+        $username = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $username));
+
+        // Cải tiến: lấy toàn bộ username trùng tiền tố và tìm số cao nhất
+        $existing = Employee::pluck('username')->toArray();
+        $max = 0;
+        foreach ($existing as $u) {
+            if ($u === $username) {
+                $max = max($max, 1);
+            } elseif (preg_match('/^' . preg_quote($username) . '(\d+)$/', $u, $matches)) {
+                $max = max($max, (int)$matches[1]);
+            }
+        }
+
+        return $max === 0 ? $username : $username . ($max + 1);
     }
-
-    $raw = $name . $initials;
-    $username = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $raw);
-    $username = str_replace(['đ', 'Đ'], ['d', 'D'], $username);
-    $username = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $username));
-
-    $original = $username;
-    $i = 2;
-    while (Employee::where('username', $username)->exists()) {
-        $username = $original . $i++;
-    }
-
-    return $username;
 }
-
-}
-

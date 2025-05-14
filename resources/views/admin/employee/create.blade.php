@@ -26,7 +26,7 @@
                         <h5 class="mb-3">Thông tin nhân viên</h5>
                         <div class="col-md-6">
                             <x-input label="Mã nhân viên" name="employee_code" required />
-                            <x-input label="Tên đăng nhập" name="username" placeholder="Tên đăng nhập sẽ được tạo tự động" />
+                            <x-input label="Tên đăng nhập" name="username" placeholder="Tên đăng nhập sẽ được tạo tự động" disabled />
                             <x-input label="Mật khẩu" name="password" type="password" />
                             <x-input label="Nhập lại mật khẩu" name="password_confirmation" type="password" />
                             <x-input label="Họ và tên" name="full_name" required />
@@ -54,7 +54,7 @@
 
                             <x-select name="education_level_code" label="Trình độ học vấn" model="EducationLevel" valueField="education_level_code" textField="education_level_name" :selected="old('education_level_code')" />
 
-                            <x-select name="status" id="e_status" label="Trạng thái" :options="[
+                            <x-select name="status" id="e_status" label="Trạng thái" disabled :options="[
                                 '1'=> 'Đang làm việc',
                                 '0'=> 'Ngừng làm việc'
                             ]" :selected="old('status')" required />
