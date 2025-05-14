@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Admin\DepartmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,4 +17,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Đăng xuất
     Route::post('logout', [AccountController::class, 'logout'])->name('logout');
+    // Department
+    Route::resource('department', DepartmentController::class)->except(['show']);
 });
