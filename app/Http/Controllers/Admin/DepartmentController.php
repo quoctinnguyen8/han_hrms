@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
 {
@@ -33,6 +34,37 @@ class DepartmentController extends Controller
         ], [], $fields);
 
         Department::create($data);
+
+        return redirect()
+            ->route('admin.department.index')
+            ->with('success', 'Department created successfully.');
+    }
+
+    public function edit($id){
+        $x = Department::findOrFail($id);
+        return view('admin.department.edit', ["data" => $x]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $fields = [
+            'department_code' => 'Mã phòng ban',
+            'department_name' => 'Tên phòng ban',
+            'address' => 'Địa chỉ',
+            'department_phone_number' => 'Số điện thoại phòng ban',
+        ];
+        $data = $request->validate([
+            'department_code' => [
+                'required',
+                Rule::unique('departments')->ignore($id, 'department_code'),
+            ],
+            'department_name' => 'required',
+            'address' => 'nullable',
+            'department_phone_number' => 'nullable|regex:/^0[0-9]{9}$/',
+        ], [], $fields);
+
+        $department = Department::findOrFail($id);
+        $department->update($data);
 
         return redirect()
             ->route('admin.department.index')
