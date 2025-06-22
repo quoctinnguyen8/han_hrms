@@ -12,7 +12,7 @@
 
             <x-table :headers="['ID', 'Tên công trình khoa học', 'Năm', 'Tên tạp chí']" :data="$scientificWorks" key="id">
                 <x-slot:action>
-                    <x-open-modal url="{{ route('admin.scientific_works.edit', ['scientific_work' => ':id']) }}"
+                    <x-open-modal url="{{ route('admin.scientific-works.edit', ['scientific_work' => ':id']) }}"
                         text="Sửa" icon="ri-edit-line" target="#mCongTrinhEdit" class="btn btn-warning btn-sm" />
                     <x-del-button url="{{ route('admin.scientific_works.destroy', ['scientific_work' => ':id']) }}"
                         class="btn-danger btn-sm" />

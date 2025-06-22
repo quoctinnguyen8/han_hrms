@@ -42,8 +42,7 @@
                     <div class="modal-body">
                         <div class="mt-2 text-center">
                             <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
-                                colors="primary:#f7b84b,secondary:#f06548"
-                                style="width:100px;height:100px"></lord-icon>
+                                colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                             <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                                 <h4>Are you sure ?</h4>
                                 <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
@@ -91,7 +90,7 @@
                         </div>
 
                         @section('content')
-                            
+
                         @show
                     </div>
                     <!-- end page title -->
@@ -152,19 +151,20 @@
     @yield('modal')
 
     <!-- JAVASCRIPT -->
-    <script src="{{ asset('/velzon/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ asset('/velzon/libs/simplebar/simplebar.min.js')}}"></script>
-    <script src="{{ asset('/velzon/libs/node-waves/waves.min.js')}}"></script>
-    <script src="{{ asset('/velzon/libs/feather-icons/feather.min.js')}}"></script>
-    <script src="{{ asset('/velzon/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
-    <script src="{{ asset('/velzon/js/plugins.js')}}"></script>
+    <script src="{{ asset('/velzon/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('/velzon/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('/velzon/libs/node-waves/waves.min.js') }}"></script>
+    <script src="{{ asset('/velzon/libs/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ asset('/velzon/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+    <script src="{{ asset('/velzon/js/plugins.js') }}"></script>
 
     <!-- App js -->
-    <script src="{{ asset('/velzon/js/app.js')}}"></script>
+    <script src="{{ asset('/velzon/js/app.js') }}"></script>
+    {{-- chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Custom javascript --}}
-    <script src="{{ asset('/js/admin.js')}}"></script>
-
+    <script src="{{ asset('/js/admin.js') }}"></script>
     @yield('script')
 </body>
 

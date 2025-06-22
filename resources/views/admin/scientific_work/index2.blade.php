@@ -9,8 +9,8 @@
         <p class="mt-3 fst-italic">Thêm thông tin công trình khoa học từ tab Công trình khoa học của nhân viên</p>
         <x-table :headers="['ID', 'Mã NV', 'Tên NV', 'Tên công trình khoa học', 'Năm', 'Tên tạp chí']" :data="$scientificWorks" key="id">
             <x-slot:action>
-                <x-open-modal url="{{ route('admin.scientific_works.edit', ['scientific_work' => ':id']) }}"
-                    text="Sửa" icon="ri-edit-line" target="#mCongTrinhEdit" class="btn btn-warning btn-sm" />
+                <x-open-modal url="{{ route('admin.scientific_work.edit', ['scientific_work' => ':id']) }}" text="Sửa"
+                    icon="ri-edit-line" target="#mCongTrinhEdit" class="btn btn-warning btn-sm" />
                 <x-del-button url="{{ route('admin.scientific_works.destroy', ['scientific_work' => ':id']) }}"
                     class="btn-danger btn-sm" />
             </x-slot>

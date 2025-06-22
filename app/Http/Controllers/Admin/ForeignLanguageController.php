@@ -48,7 +48,7 @@ class ForeignLanguageController extends BaseController
             'level' => 'nullable|string|max:30',
         ], [], $this->fields);
         ForeignLanguage::create($validatedData);
-        return redirect()->route('admin.foreign_languages.index', ['employeeCode'=>$validatedData['employee_code']])
+        return redirect()->route('admin.foreign-languages.index', ['employeeCode' => $validatedData['employee_code']])
             ->with('success', 'Thêm thông tin ngoại ngữ thành công');
     }
 
@@ -69,7 +69,7 @@ class ForeignLanguageController extends BaseController
 
         $foreignLanguage->update($validatedData);
         return back()
-                ->with('success', 'Cập nhật ngoại ngữ thành công');
+            ->with('success', 'Cập nhật ngoại ngữ thành công');
     }
 
     public function destroy(string $id)
@@ -77,6 +77,6 @@ class ForeignLanguageController extends BaseController
         $foreignLanguage = ForeignLanguage::findOrFail($id);
         $foreignLanguage->delete();
         return back()
-                ->with('success', 'Xóa ngoại ngữ thành công');
+            ->with('success', 'Xóa ngoại ngữ thành công');
     }
 }

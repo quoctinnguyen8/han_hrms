@@ -115,27 +115,20 @@ class EmployeeController extends BaseController
      */
     public function index()
     {
-        $query = Employee::select(
-            'employee_code',
-            'full_name',
-            'hometown',
-            'phone_number'
-        );
+        $query = Employee::with(['employee_position', 'department']);
+
         if (request('employee_code')) {
-            // Tìm chính xác theo mã nhân viên
             $query->where('employee_code', request('employee_code'));
         }
         if (request('full_name')) {
-            // Tìm theo tên nhân viên
             $query->where('full_name', 'like', '%' . request('full_name') . '%');
         }
         if (request('department_code')) {
-            // Tìm theo mã phòng ban
             $query->where('department_code', request('department_code'));
         }
-        // xem câu sql
-        //dd($query->toSql());
+
         $employees = $query->orderByDesc('created_at')->paginate();
+
         return view('admin.employee.index', compact('employees'));
     }
 

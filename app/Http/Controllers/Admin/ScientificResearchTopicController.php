@@ -62,7 +62,7 @@ class ScientificResearchTopicController extends Controller
             'year_of_complete.before_or_equal' => 'Năm hoàn thành không được lớn hơn năm bắt đầu',
         ], $this->fields);
         ScientificResearchTopic::create($validatedData);
-        return redirect()->route('admin.scientific_research_topics.index', ['employeeCode'=>$validatedData['employee_code']])
+        return redirect()->route('admin.scientific-research-topics.index', ['employeeCode'=>$validatedData['employee_code']])
             ->with('success', 'Thêm thông tin đề tài nghiên cứu thành công');
     }
 
